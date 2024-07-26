@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Fight Fusion</title>
+
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+    <link rel="manifest" href="./favicon/site.webmanifest">
+
+    <link rel="stylesheet" href="./css/style copy.css">
+    <link rel="stylesheet" href="./css/game.css">
+
+    <script src="https://unpkg.com/feather-icons" defer></script>
+
+    <script src="https://unpkg.com/gifler/gifler.min.js" defer></script>
+
+    <!-- Include jQuery UI CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" defer>
+
+    <!-- Include jQuery and jQuery UI JS -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" defer></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
+
+    <script src="./scripts/var.js" defer></script>
+    <script src="./scripts/functions.js" defer></script>
+    <script src="./scripts/nav.js" defer> </script>
+    <script src="./scripts/game.js" defer></script>
+    <!-- <script src="./scripts/landing.js" defer></script>
+    <script src="./scripts/main.js" defer></script> -->
+
+<body id="wrapper">
+    <nav class="navbar" id="nav">
+        <div class="flex-display">
+            <span><i data-feather="square" class="txt-main"></i></span>
+            <span>Fight Fusion</span>
+        </div>
+        <div class="menu-lg">
+            <ul class="" id="menu-contents">
+                <li><a href="./index.html" class="navbar-hover">Home</a></li>
+                <li><a href="#about" class="navbar-hover">About</a></li>
+                <li><a href="#play-game" class="navbar-hover">Play Game</a></li>
+                <li><a href="#contact" class="navbar-hover">Contact</a></li>
+            </ul>
+        </div>
+        <div class="menu-md">
+            <div class="menu" id="nav-items">
+                <ul class="" id="menu-contents">
+                    <li><a href="./index.html" class="navbar-hover">Home</a></li>
+                    <li><a href="#about" class="navbar-hover">About</a></li>
+                    <li><a href="#play-game" class="navbar-hover">Play Game</a></li>
+                    <li><a href="#contact" class="navbar-hover">Contact</a></li>
+                </ul>
+            </div>
+            <div class="toggle-menu" id="menu">
+                <i data-feather="menu" class="txt-main" id="icon-menu"></i>
+            </div>
+            <div class="hide-menu" id="x">
+                <i data-feather="x" class="txt-main" id="icon-x"></i>
+            </div>
+        </div>
+    </nav>
+    <section class=" p-top">
+        <div class="game-container p-top">
+            <div class="game-box-area ">
+                <div class="player-area">
+                    <div class="player" id="players">
+                        <img class="player01 bounce" src="./resources/gifs/punch.gif" id="player01">
+                    </div>
+                </div>
+            </div>
+            <div class="controls">
+                <button id="btn-up" class="direction-btn">&#8593;</button> <!-- Up Arrow -->
+                <button id="btn-left" class="direction-btn">&#8592;</button> <!-- Left Arrow -->
+                <button id="btn-right" class="direction-btn">&#8594;</button> <!-- Right Arrow -->
+                <button id="btn-down" class="direction-btn">&#8595;</button> <!-- Down Arrow -->
+            </div>            
+        </div>
+    </section>
+    <section class="landing p-top">
+        <div class="landing-center">
+            <!-- Text Container -->
+            <div class="place-start">
+                <canvas id="gifCanvas" width="800" height="400"></canvas>
+                <canvas id="gameCanvas" width="800" height="400"></canvas>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

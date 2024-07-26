@@ -1,0 +1,21 @@
+header {
+  flex-wrap: wrap;
+  background-color: red;
+  color: black;
+  display: flex;
+  justify-content: space-between;
+}
+header nav {
+  display: none;
+}
+header nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+header nav a {
+  display: block;
+  line-height: 45px;
+  padding: 0 16px;
+  font-size: 1.3em;
+}

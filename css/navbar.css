@@ -1,0 +1,118 @@
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: black;
+    position: fixed;
+    width: 100%;
+    border-end-end-radius: 10px;
+    border-end-start-radius: 10px;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.navbar-hover {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-width: 2px;
+    border-color: white;
+    border-style: solid;
+    border-radius: 0.375rem;
+    transition: all 0.5s ease-in-out;
+}
+
+.navbar-hover:hover {
+    transform: scale(1.05);
+    border-color: #CB3F14;
+    /* Orange-600 in Tailwind CSS */
+    color: #CB3F14;
+}
+
+.navbar ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+}
+
+
+.navbar li {
+    margin: 0 20px;
+}
+
+.menu-lg {
+    display: block;
+}
+
+.menu-md {
+    display: none;
+}
+
+.toggle-menu {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: 2px solid;
+    border-radius: 5px;
+    border-color: white;
+    padding: 2px;
+    margin: 20px;
+    cursor: pointer;
+    display: none;
+    transition: ease-in-out 0.5s;
+}
+
+.flex-display span{
+    font-size: larger;
+    margin-top: 5px;
+    padding: 10px;
+}
+
+.toggle-menu:hover {
+    transform: scale(1.25);
+}
+
+.hide-menu {
+    display: none;
+}
+
+.show-menu {
+    display: block;
+}
+
+@media (max-width: 800px) {
+    .navbar {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+        background-color: black;
+    }
+
+    .navbar ul {
+        flex-direction: column;
+        margin: 5px 0;
+    }
+
+    .navbar li {
+        margin: 10px 0;
+    }
+
+    .menu {
+        display: none;
+    }
+
+    .toggle-menu {
+        display: block;
+    }
+
+    .menu-lg {
+        display: none;
+    }
+
+    .menu-md {
+        display: block;
+    }
+}
