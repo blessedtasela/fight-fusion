@@ -10,3 +10,5 @@ $x.click(function () {
     $menu.toggleClass('hide');
 })
 
+feather.replace();
+

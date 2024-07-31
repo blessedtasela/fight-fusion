@@ -14,7 +14,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
     <link rel="manifest" href="./favicon/site.webmanifest">
 
-    <link rel="stylesheet" href="./css/style copy.css">
+    <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/game.css">
 
     <script src="https://unpkg.com/feather-icons" defer></script>
@@ -29,11 +29,11 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
 
     <script src="./scripts/var.js" defer></script>
-    <script src="./scripts/functions.js" defer></script>
     <script src="./scripts/nav.js" defer> </script>
+    <script src="./scripts/player.js" defer></script>
+    <script src="./scripts/game-var.js" defer></script>
+    <script src="./scripts/game-functions.js" defer></script>
     <script src="./scripts/game.js" defer></script>
-    <!-- <script src="./scripts/landing.js" defer></script>
-    <script src="./scripts/main.js" defer></script> -->
 
 <body id="wrapper">
     <nav class="navbar" id="nav">
@@ -66,32 +66,156 @@
             </div>
         </div>
     </nav>
-    <section class=" p-top">
-        <div class="game-container p-top">
-            <div class="game-box-area ">
-                <div class="player-area">
-                    <div class="player" id="players">
-                        <img class="player01 bounce" src="./resources/gifs/punch.gif" id="player01">
+
+    <section class="game-container" id="main">
+        <div class="game-box-area ">
+            <div class="player-area">
+
+                <div class="player" id="players">
+                    <div id="player01">
+                        <div id="player01Hit" class="flex-display player-hit"></div>
+                        <img class="player01 bounce " src="./resources/gifs/standing.gif">
+                    </div>
+                    <div id="player02">
+                        <div id="player02Hit" class="flip-opposite flex-display player-hit"></div>
+                        <img class="player02 bounce" src="./resources/gifs/standing.gif">
                     </div>
                 </div>
             </div>
-            <div class="controls">
-                <button id="btn-up" class="direction-btn">&#8593;</button> <!-- Up Arrow -->
-                <button id="btn-left" class="direction-btn">&#8592;</button> <!-- Left Arrow -->
-                <button id="btn-right" class="direction-btn">&#8594;</button> <!-- Right Arrow -->
-                <button id="btn-down" class="direction-btn">&#8595;</button> <!-- Down Arrow -->
-            </div>            
         </div>
-    </section>
-    <section class="landing p-top">
-        <div class="landing-center">
-            <!-- Text Container -->
-            <div class="place-start">
-                <canvas id="gifCanvas" width="800" height="400"></canvas>
-                <canvas id="gameCanvas" width="800" height="400"></canvas>
+        <div class="btns-control">
+            <div class="controls">
+                <button id="btn-up" class="direction-btn">&#9650;</button>
+                <button id="btn-left" class="direction-btn">&#9668;</button>
+                <button id="btn-right" class="direction-btn">&#9658;</button>
+                <button id="btn-down" class="direction-btn">&#9660;</button>
+            </div>
+            <div id="play" class="start-end p-top">
+                <button>Play</button>
+            </div>
+            <div id="exit" class="start-end p-top hide">
+                <button>Exit</button>
+            </div>
+            <div class="moves">
+                <button id="btn-punch" class="move-btn">punch</button>
+                <button id="btn-block" class="move-btn">block</button>
+                <button id="btn-kick" class="move-btn">kick</button>
+                <button id="btn-combo" class="move-btn">combo</button>
             </div>
         </div>
+
     </section>
+
+    <div class="game-data disabled">
+        <div class="toggle-game" id="show-game-history">
+            <i data-feather="arrow-down" class=""></i>
+        </div>
+        <div class="hide-game" id="hide-game-history">
+            <i data-feather="arrow-up" class=""></i>
+        </div>
+        <h2 class="p-top-btm">Game History</h2>
+        <div id="game-history" class="hide">
+            <ol id="game-history-list"></ol>
+            <button id="delete-game">Delete All Games</button>
+        </div>
+
+    </div>
+
+    <div id="round-result" class="popup">
+        <span id="close-round-result" class="close-popup hide">&times;</span>
+        <div class="flex-display">
+            <img id="round-result-image" src="" alt="Game Result Image">
+        </div>
+        <h2 id="end-game-header" class="flex-display">Round Result</h2>
+        <p id="round-result-details">Game details here</p>
+        <div class="flex-display">
+            <button id="next-round">Next Round</button>
+            <button id="round-end-game">End Game</button>
+        </div>
+        <audio id="round-result-audio" src=""></audio>
+    </div>
+
+    <div id="end-game" class="popup ">
+        <span id="close-end-game" class="close-popup">&times;</span>
+        <div class="flex-display">
+            <img id="end-game-image" src="" alt="Game Result Image">
+        </div>
+        <h2 id="end-game-header" class="flex-display">Game Over</h2>
+        <p id="end-game-details">Game details here</p>
+        <div class="flex-display">
+            <button id="end-game-new-game">New Game</button>
+            <button id="cancel-end-game">Finish</button>
+        </div>
+        <audio id="end-game-audio" src=""></audio>
+    </div>
+
+    <div id="resume-game" class="popup">
+        <span id="close-resume-game" class="close-popup">&times;</span>
+        <h2>Continue Previous Game?</h2>
+        <span class="success">Do you want to continue where you left off, or start a new game?</span>
+        <div class="flex-display">
+            <button id="continue-resume-game">Continue Game</button>
+            <button id="start-resume-new-game">New Game</button>
+        </div>
+    </div>
+
+    <div id="start-game" class="popup">
+        <span id="close-start-game" class="close-popup">&times;</span>
+        <H2>Please read the instructions carefully</H2>
+        <div class="success">
+            <ul>
+                <li>The game lasts for 10 seconds each round.</li>
+                <li>To win, the player must win more than 2 rounds.</li>
+                <li>If there is a draw in the first 3 rounds, extra rounds will be added until a player wins.</li>
+                <li>The player is competing against the computer.</li>
+                <li>To win a round, the player must have more life points before the time elapses or defeat the other
+                    player.</li>
+                <li>Players can view the game history below.</li>
+            </ul>
+        </div>
+        <div class="flex-display">
+            <button id="start-new-game">Play</button>
+            <button id="cancel-start-game">Cancel</button>
+        </div>
+    </div>
+
+    <div id="delete-all-games" class="popup">
+        <span id="close-delete-game" class="close-popup">&times;</span>
+        <H2>Are you sure you want to delete all games?</H2>
+        <span class="failure">All saved game data would be lost!!!!</span>
+        <div class="flex-display">
+            <button id="delete-delete-all-games">Delete</button>
+            <button id="cancel-delete-all-games">Cancel</button>
+        </div>
+    </div>
+
+    <div id="exit-game" class="popup">
+        <span id="close-exit-game" class="close-popup">&times;</span>
+        <H2>Are you sure you want to end the game?</H2>
+        <span class="failure">All current progress would be lost!!!!</span>
+        <div class="flex-display">
+            <button id="finish-exit-game">Finish</button>
+            <button id="cancel-exit-game">Cancel</button>
+        </div>
+    </div>
+
+    <div id="round-count-down" class="count-down-popup">
+        <div class="flex-display" id="count-down">
+            00:00s
+        </div>
+    </div>
+
+    <div id="current-round" class="count-down-popup">
+        <div class="flex-display" id="current-round-data">
+            0
+        </div>
+    </div>
+
+    <div id="pre-round" class="count-down-popup">
+        <div class="flex-display" id="pre-round-data">
+            0
+        </div>
+    </div>
 </body>
 
 </html>

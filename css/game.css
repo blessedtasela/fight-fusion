@@ -1,3 +1,69 @@
+button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-width: 2px;
+    border-color: white;
+    border-style: solid;
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    margin: 10px;
+    border-radius: 0.375rem;
+    transition: all 0.5s ease-in-out;
+}
+
+ol ul {
+    color: black;
+    font-weight: bold;
+}
+
+li {
+    padding: 2px;
+}
+
+button:hover {
+    transform: scale(1.25);
+    border-color: #CB3F14;
+    color: #CB3F14;
+}
+
+.no-marker {
+    list-style-type: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.flip-opposite {
+    transform: scaleX(-1);
+}
+
+.p-top-btm {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.toggle-game {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: 2px solid;
+    border-radius: 5px;
+    border-color: white;
+    padding: 2px;
+    margin: 20px;
+    cursor: pointer;
+    display: block;
+    transition: ease-in-out 0.5s;
+}
+
+.hide-game {
+    display: none;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
 /* Container for the whole game area */
 .game-container {
     width: 100%;
@@ -12,8 +78,8 @@
     position: relative;
     display: flex;
     justify-content: center;
-    background-color: #f0f0f0;
-    border: 2px solid #ccc;
+    background-color: black;
+    border: 2px solid black;
     overflow: hidden;
 }
 
@@ -22,7 +88,7 @@
     width: 100%;
     position: relative;
     margin: 10%;
-    background-color: #0056b3;
+    background-color: black;
 }
 
 
@@ -30,17 +96,82 @@
     position: absolute;
     width: 50%;
     left: 5%;
-    top: 70%;
+    top: 50%;
 }
 
 .player img {
-    width: 50%;
+    width: 100%;
+    background-color: black;
+    position: relative;
 }
 
-#player01 {
-    position: absolute;  
-    left: 0;  
-    top: 0; 
+.player-hit{
+    display: flex;
+    margin-bottom: 30%;
+}
+
+
+#player01,
+#player02 {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    margin: -20% -10%;
+}
+
+#player02 {
+    transform: scaleX(-1) !important;
+}
+
+.start-end {
+    position: relative;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.btns-control {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    position: relative;
+    bottom: 15%;
+}
+
+.moves {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    justify-items: center;
+    right: 5%;
+    height: 130px;
+    position: relative;
+    border-radius: 5%;
+    background-color: #CB3F14;
+}
+
+.moves button {
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    padding: 50px;
+    cursor: pointer;
+    min-width: 60px;
+    font-weight: bold;
+    transition: all 0.8s ease-in-out;
+}
+
+.moves button:hover {
+    background-color: wheat;
+    transform: scale(1.25) !important;
+    ;
+}
+
+.moves button:active {
+    background-color: wheat;
+    transform: scale(1.05) !important;
+    ;
 }
 
 .controls {
@@ -50,65 +181,271 @@
     left: 5%;
     height: 130px;
     width: 130px;
-    bottom: 15%;
     position: relative;
     border-radius: 50%;
-    background-color: #007BFF;
+    background-color: blue;
 }
 
 .button-container {
     position: relative;
-    width: 50px; /* Adjust size as needed */
-    height: 50px; /* Adjust size as needed */
+    width: 50px;
+    height: 50px;
 }
 
 .direction-btn {
-    width: 40px; 
-    height: 40px; 
-    border-radius: 50%; 
-    background-color: #CB3F14; 
-    color: white; 
-    border: none; 
-    font-size: 24px; 
-    cursor: pointer; 
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #CB3F14;
+    color: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
     position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.8s; 
+    transition: all 0.8s ease-in-out;
 }
 
 .direction-btn:hover {
-    background-color: #942605; /* Darker color on hover */
+    background-color: #942605;
+    transform: scale(1.25) !important;
+    ;
 }
 
 .direction-btn:active {
-    background-color: #691c04; /* Even darker color on click */
+    background-color: #691c04;
+    transform: scale(1.05) !important;
+    ;
 }
 
 
 #btn-up {
     top: 0;
-    left: 30%;
-    transform: translateX(-50%);
+    margin: 5px;
+
 }
 
 #btn-down {
     bottom: 0;
-    left: 30%;
-    transform: translateX(-50%);
+    margin: 5px;
+
 }
 
 #btn-left {
     left: -20%;
-    top: 50%;
-    transform: translateY(-50%);
+    margin-left: 30px;
 }
 
 #btn-right {
     right: -20%;
+    margin-right: 30px;
+}
+
+#btn-punch {
+    padding: 5px;
+
+}
+
+#btn-block {
+    padding: 5px;
+}
+
+#btn-kick {
+    padding: 5px;
+}
+
+#btn-combo {
+    padding: 5px;
+
+}
+
+button[disabled].direction-btn {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
+
+button[disabled].move-btn {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.game-data {
+    position: relative;
+    gap: 10px;
+    justify-content: start;
+    background-color: #CB3F14;
+    margin-top: 20px;
+    border-radius: 10px;
+    padding-inline: 20px;
+}
+
+.popup {
+    position: fixed;
+    left: 50%;
     top: 50%;
-    transform: translateY(-50%);
+    min-height: 20%;
+    min-width: 25%;
+    opacity: 0;
+    display: none;
+    transition: opacity 1s;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    color: black;
+    text-align: start;
+    border: 2px solid;
+    border-color: lightblue;
+    border-radius: 7px;
+    background-color: aliceblue;
+    padding: 10px;
+    padding-bottom: 20px;
+}
+
+
+.count-down-popup {
+    position: fixed;
+    left: 50%;
+    top: 20%;
+    opacity: 0.5;
+    display: none;
+    transition: opacity 1s;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    color: black;
+    font-weight: bold;
+    text-align: start;
+    border: 2px solid;
+    border-color: lightblue;
+    border-radius: 7px;
+    font-size: larger;
+    background-color: aliceblue;
+    padding: 5px;
+}
+
+.close-popup {
+    position: relative;
+    left: 90%;
+    max-width: 100%;
+    font-weight: bold;
+    font-size: xx-large;
+    color: red;
+    cursor: pointer;
+    transition: opacity 1s;
+}
+
+.close-popup:hover {
+    font-size: 40px;
+    color: darkred;
+}
+
+.overlay {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0.5;
+    transition: opacity 0.8s;
+    pointer-events: none;
+}
+
+.disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.flex-display button {
+    background-color: black;
+    color: white;
+}
+
+.failure {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+    max-width: 100%;
+    width: 400px;
+    border: 2px solid;
+    background-color: red;
+    font-size: small;
+    padding: 10px;
+    color: white;
+    border-radius: 5px;
+    border-color: white;
+}
+
+
+.draw {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+    max-width: 100%;
+    width: 400px;
+    border: 2px solid;
+    background-color: gray;
+    font-size: small;
+    padding: 10px;
+    color: white;
+    border-radius: 5px;
+    border-color: white;
+}
+
+.success {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+    max-width: 100%;
+    width: 400px;
+    border: 2px solid;
+    background-color: green;
+    font-size: small;
+    padding: 10px;
+    color: white;
+    border-radius: 5px;
+    border-color: white;
+}
+
+.popup-content {
+    text-align: center;
+}
+
+.result {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.result-hide {
+    display: none;
+}
+
+.popup-button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.popup-button:hover {
+    background-color: #0056b3;
 }
 
 @media (max-width:800px) {
