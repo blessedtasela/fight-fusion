@@ -12,3 +12,16 @@ $x.click(function () {
 
 feather.replace();
 
+$(window).scroll(function () {
+    if ($(this).scrollTop() > 1500) {
+        $scrollToTop.fadeIn();
+    } else {
+        $scrollToTop.fadeOut();
+    }
+});
+
+// Smooth scroll to the top when button is clicked
+$scrollToTop.click(function () {
+    $('html, body').animate({ scrollTop: 0 }, 'smooth');
+});
+

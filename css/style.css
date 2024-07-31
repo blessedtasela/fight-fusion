@@ -22,7 +22,7 @@ a {
 
 button {
   margin: 0 20%;
-  background-color: black;
+  background-color: #000000;
   color: white;
   cursor: pointer;
 }
@@ -63,9 +63,8 @@ button:hover {
 .txt-home-add-on {
   color: #CB3F14;
   padding-left: 10px;
-  border-bottom: solid;
+  border-bottom: solid 2px #CB3F14;
   font-size: larger;
-  border-color: #CB3F14;
 }
 
 .txt-home-title {
@@ -93,7 +92,7 @@ button:hover {
   overflow: hidden;
   align-items: center;
   justify-content: center;
-  background-color: black;
+  background-color: #000000;
   padding: 2rem;
 }
 
@@ -125,10 +124,8 @@ button:hover {
 
 .flex-display {
   display: flex;
-  justify-content: flex-end;
-  left: 0;
-  margin: 10px 5px;
   justify-content: center;
+  margin: 10px 5px;
 }
 
 #txt:hover {
@@ -138,9 +135,7 @@ button:hover {
 .home-btn-hover {
   display: inline-block;
   padding: 0.2rem 1rem;
-  border-width: 2px;
-  border-color: white;
-  border-style: solid;
+  border: 2px solid white;
   border-radius: 20px;
   width: -moz-fit-content;
   width: fit-content;
@@ -179,8 +174,8 @@ button:hover {
   background-color: #000000;
   position: fixed;
   width: 100%;
-  border-end-end-radius: 20px;
-  border-end-start-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
   bottom: 0;
   z-index: 10;
 }
@@ -280,4 +275,177 @@ button:hover {
   60% {
     transform: translateY(-5px);
   }
+}
+.border {
+  display: flex;
+  border: 2px solid #CB3F14;
+  border-radius: 30px;
+  padding: 0.5rem;
+  margin: 10px;
+  width: 50px;
+  background-color: #CB3F14;
+}
+
+@media (max-width: 500px) {
+  .border {
+    width: 40px;
+  }
+}
+.section-about {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  height: 100vh;
+}
+
+.section-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.section-description {
+  text-align: justify;
+  font-size: 0.9rem;
+}
+@media (min-width: 800px) {
+  .section-description {
+    font-size: 1.1rem;
+  }
+}
+
+.section-contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  height: 100vh;
+}
+.section-contact .contact-icons {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(6, 1fr);
+}
+@media (max-width: 900px) {
+  .section-contact .contact-icons {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 500px) {
+  .section-contact .contact-icons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.section-contact .contact-icons a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+.section-contact .contact-icons a:hover {
+  transform: scale(1.25);
+  color: #CB3F14;
+}
+.section-contact .contact-icons a:hover .contact-icon {
+  color: #CB3F14;
+}
+.section-contact .contact-icons a .contact-icon {
+  font-size: 2rem;
+  color: white;
+}
+.section-contact .contact-icons a p {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 0.5rem 0.5rem;
+  font-size: 1rem;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.footer .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.footer .footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+@media (min-width: 600px) {
+  .footer .footer-content {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+.footer .footer-item {
+  margin: 0.5rem 0;
+}
+.footer .footer-item p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+.footer .footer-item p .footer-highlight {
+  color: #CB3F14;
+}
+.footer .footer-item p a {
+  color: #CB3F14;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+.footer .footer-item p a:hover {
+  color: #ee7a57;
+}
+.footer .footer-icons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+.footer .footer-icons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: color 0.3s ease-in-out;
+}
+.footer .footer-icons a:hover {
+  color: #CB3F14;
+}
+.footer .footer-icons a .footer-icon {
+  font-size: 1.5rem;
+}
+
+.scroll-to-top {
+  display: none;
+  position: fixed;
+  bottom: 16px;
+  right: 5%;
+  font-weight: bold;
+  color: #CB3F14;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: opacity 0.8s ease;
+}
+
+.scroll-to-top i {
+  color: #CB3F14;
+}
+
+.scroll-to-top:hover {
+  opacity: 0.8;
+  color: #CB3F14;
 }

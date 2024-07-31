@@ -28,6 +28,7 @@ const $menu = $('#menu');
 const $x = $('#x');
 const $menuContents = $('#menu-contents');
 const $navItems = $('#nav-items');
+const $scrollToTop = $('#scroll-to-top');
 
 const heroes = [
     { id: 1, title: "Inspire and Transform Your Body with", image: "./resources/images/ff01.jpg" },
