@@ -50,6 +50,7 @@ const $endGameImage = $('#end-game-image');
 const $endGameDetails = $('#end-game-details');
 const $endGameAudio = $('#end-game-audio');
 const $roundResult = $('#round-result');
+const $roundResultImage = $('#round-result-image');
 const $closeRoundResult = $('#close-round-result');
 const $nextRound = $('#next-round');
 const $roundResultDetails = $('#round-result-details');
@@ -63,6 +64,7 @@ const $preRoundData = $('#pre-round-data');
 const $controls = $('.direction-btn, .move-btn');
 
 let player02IntervalId;
+let roundIntervalId;
 let isMaxWidth = false;
 let isCollision = false;
 let gameStarted = false;
@@ -93,6 +95,7 @@ const maxCombo = 3;
 const maxLife = 15;
 const minCombo = 0;
 const minLife = 0;
+const playerWinRounds = 2;
 const duration = 500;
 const playerWidthOffset = 50;
 const playerHeightOffset = 100;
@@ -109,6 +112,11 @@ const parentWidth = $playerArea.width();
 const parentHeight = $playerArea.height();
 const gameInProgress = 'in-progress';
 const gameFinished = 'finished';
+const gameDrawn = 'draw';
+const roundWin = 'wins this round!';
+const roundLose = 'lose this round!';
+const roundDraw = 'Round is a draw!';
+const gifPath = `./resources/gifs/`;
 
 const playerPosition = {
     top: 0,
@@ -124,5 +132,5 @@ const computerPosition = {
 
 
 // Create Player and Computer instances
-const player01 = new Player($player01, playerPosition, {}, 'Samson');
-const player02 = new Player($player02, computerPosition, {}, 'Computer');
+let player01 = new Player($player01, playerPosition, {}, 'Samson');
+let player02 = new Player($player02, computerPosition, {}, 'Computer');

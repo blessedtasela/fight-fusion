@@ -105,7 +105,7 @@ button:hover {
     position: relative;
 }
 
-.player-hit{
+.player-hit {
     display: flex;
     margin-bottom: 30%;
 }
@@ -453,4 +453,68 @@ button[disabled].move-btn {
         margin: 5%;
     }
 
+}
+#game-history-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#game-history-list th, #game-history-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#game-history-list th {
+    background-color: #f2f2f2;
+    text-align: left;
+    color: black;
+    font-weight: bold;
+}
+
+/* Responsive styling */
+@media screen and (max-width: 850px) {
+    #game-history-list table, #game-history-list tbody, #game-history-list th, #game-history-list td, #game-history-list tr {
+        display: block;
+    }
+
+    #game-history-list thead {
+        display: none;
+    }
+
+    #game-history-list tr {
+        margin-bottom: 10px;
+        border-bottom: 2px solid #ddd;
+    }
+
+    #game-history-list td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    #game-history-list td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 10px;
+        font-weight: bold;
+        color: black;
+        border-right: 1px solid #ddd;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    #game-history-list td {
+        padding-left: 40%;
+    }
+
+    #game-history-list td:before {
+        padding-left: 5px;
+        font-size: 0.9em;
+    }
 }

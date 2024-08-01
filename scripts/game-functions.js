@@ -58,7 +58,7 @@ function closeStartGame() {
 }
 
 function openEndGame() {
-    console.log('openStartGame popups have been opened.');
+    console.log('openEndGame popups have been opened.');
     $endGame.css('display', 'block').css('opacity', '1');
     $exit.addClass('hide');
     $play.removeClass('hide');
@@ -67,7 +67,7 @@ function openEndGame() {
 }
 
 function closeEndGame() {
-    console.log('closeStartGame popups have been close.');
+    console.log('closeEndGame popups have been close.');
     $endGame.css('display', 'none').css('opacity', '0');
     $main.removeClass('overlay disabled');
     $gameData.removeClass('disabled');
@@ -161,19 +161,19 @@ function beginGame() {
     startRound();
 }
 
-function closeAllPopups() {
-    console.log('Closing all popups.');
+function closeAllPopupsExceptRoundResult() {
+    console.log('Closing all closeAllPopupsExceptRoundResult.');
 
     // Close each popup
     $exitGame.css('display', 'none').css('opacity', '0');
     $resumeGame.css('display', 'none').css('opacity', '0');
     $startGame.css('display', 'none').css('opacity', '0');
     $endGame.css('display', 'none').css('opacity', '0');
-    $roundResult.css('display', 'none').css('opacity', '0');
     $roundCountDown.css('display', 'none').css('opacity', '0');
     $currentRound.css('display', 'none').css('opacity', '0');
     $preRound.css('display', 'none').css('opacity', '0');
     $deleteAllGames.css('display', 'none').css('opacity', '0');
+    // $roundResult.css('display', 'none').css('opacity', '0');
 
     // Restore main and gameData classes
     $main.removeClass('overlay disabled');
@@ -185,83 +185,24 @@ function closeAllPopups() {
 }
 
 
-
-function saveGameState() {
-    let gameStates = JSON.parse(localStorage.getItem('gameStates')) || [];
-    let gameStatus = (player01.currentLife > 0 && player02.currentLife > 0) ? gameInProgress : gameFinished;
-
-    let ongoingGameIndex = gameStates.findIndex(game => game.isGameInProgress);
-    let winner = null;
-
-    if (player01Wins >= 2) {
-        winner = player01.playerName;
-    } else if (player02Wins >= 2) {
-        winner = player02.playerName;
-    } else if (currentRound >= maxRounds && player01Wins !== player02Wins) {
-        winner = player01Wins > player02Wins ? player01.playerName : player02.playerName;
-    } else {
-        winner = player02.playerName;
-    }
-
-    if (ongoingGameIndex >= 0) {
-        // Update the existing ongoing game
-        gameStates[ongoingGameIndex] = {
-            ...gameStates[ongoingGameIndex],
-            player: {
-                position: player01.position,
-                life: player01.currentLife,
-                combo: player01.currentCombo
-            },
-            computer: {
-                position: player02.position,
-                life: player02.currentLife,
-                combo: player02.currentCombo
-            },
-            status: gameStatus,
-            currentRound: currentRound,
-            maxRounds: maxRounds,
-            winner: winner,
-        };
-    } else {
-        // Save a new game state
-        const newGameState = {
-            id: gameStates.length + 1,
-            timestamp: getFormattedTimestamp(),
-            player: {
-                position: player01.position,
-                life: player01.currentLife,
-                combo: player01.currentCombo
-            },
-            computer: {
-                position: player02.position,
-                life: player02.currentLife,
-                combo: player02.currentCombo
-            },
-            isGameInProgress: currentRound < maxRounds,
-            status: gameStatus,
-            currentRound: currentRound,
-            maxRounds: maxRounds,
-            winner: winner,
-        };
-
-        gameStates.push(newGameState);
-    }
-
-    displayGameHistory();
-    localStorage.setItem('gameStates', JSON.stringify(gameStates));
-}
-
 // Function to determine the game status
 function determineGameStatus() {
     if (currentRound < maxRounds) {
-        return 'in-progress';
-    }
-    if (player01Wins > player02Wins) {
-        return 'win';
-    } else if (player02Wins > player01Wins) {
-        return 'lose';
+        return gameInProgress;
     } else {
-        return 'draw';
+        return gameFinished;
+    }
+}
+
+function determineGameWinner() {
+    if (player01Wins >= 2) {
+        return player01.playerName;
+    } else if (player02Wins >= 2) {
+        return player02.playerName;
+    } else if (currentRound >= maxRounds && player01Wins !== player02Wins) {
+        return player01Wins > player02Wins ? player01.playerName : player02.playerName;
+    } else {
+        return player02.playerName;
     }
 }
 
@@ -303,46 +244,37 @@ function isRoundOver() {
 }
 
 
-
 function endRound() {
-    // Check if the game should end immediately
-    if ((player01Wins >= 2 || player02Wins >= 2) && (currentRound >= initMaxRound || currentRound >= maxRounds)) {
-        gameEnded();
-    } else if (currentRound >= initMaxRound || currentRound >= maxRounds) {
-        // If the maximum number of rounds has been reached, determine the winner
-        if (player01Wins > player02Wins && (currentRound >= initMaxRound || currentRound >= maxRounds) || player02Wins > player01Wins && (currentRound >= initMaxRound || currentRound >= maxRounds)) {
-            gameEnded();
-        } else {
-            showRoundResult();
-        }
+    // Check if a player has won the required number of rounds or if the max rounds are reached
+    if (player01Wins >= playerWinRounds || player02Wins >= playerWinRounds || currentRound >= maxRounds) {
+        endGame();
     } else {
-        // Show the result of the current round
         showRoundResult();
     }
 
     closeRoundCountdown();
-    closeAllPopups();
-    showRoundResult();
+    closeAllPopupsExceptRoundResult();
     disableControls();
-
     saveGameState();
 }
+
 
 
 
 function displayRoundCountdown(countdown) {
     $roundCountDown.text("START!!!");
     openRoundCountdown();
-    let interval = setInterval(() => {
+    roundIntervalId = setInterval(() => {
         countdown--;
         console.log(`Round time remaining: ${countdown}`);
         $roundCountDown.text(countdown);
         if (countdown <= countdownEnd || isRoundOver()) {
-            clearInterval(interval);
+            clearInterval(roundIntervalId);
             endRound();
         }
     }, roundInterval);
 }
+
 function displayPreRoundInfo(countdown) {
     if (isRoundEnded) {
         return; // Exit if the game has ended
@@ -403,22 +335,31 @@ function displayPreRoundInfo(countdown) {
 // Function to show the round result popup
 function showRoundResult() {
     let roundResult;
+    let roundResultImage;
     if (player01.currentLife > player02.currentLife) {
         player01Wins++;
-        roundResult = 'Player 1 wins this round!';
+        roundResult = `${player01.playerName} ${roundWin}`;
+        roundResultImage = `${gifPath}round-win.gif`;
     } else if (player02.currentLife > player01.currentLife) {
         player02Wins++;
-        roundResult = 'Player 2 wins this round!';
+        roundResult = `${player02.playerName} ${roundWin}`;
+        roundResultImage = `${gifPath}round-lose.gif`;
     } else {
-        roundResult = 'This round is a draw!';
+        roundResult = `${roundDraw}`;
+        roundResultImage = `${gifPath}round-draw.gif`;
     }
+
+    clearInterval(roundIntervalId);
 
     // Update popup content and show
     $roundResultDetails.text(roundResult);
+    $roundResultImage.attr('src', roundResultImage);
+    $roundResultImage.attr('alt', roundResultImage);
     $roundResult.css('display', 'block').css('opacity', '1');
 }
+
 // Method to end the game
-function gameEnded() {
+function endGame() {
     let resultClass = '';
     let resultDetails = '';
     let resultImage = '';
@@ -437,27 +378,27 @@ function gameEnded() {
             resultTitle = 'Congratulations! You Win';
             resultClass = 'success';
             resultDetails = `Congratulations ${player01.playerName}! You won a total of ${player01.roundsWon} rounds.\nCurrent Life is ${player01.currentLife}`;
-            resultImage = 'path_to_win_image.gif';
+            resultImage = `${gifPath}${resultClass}.gif`;
             resultAudio = 'path_to_win_audio.mp3';
         } else if (player02.roundsWon > player01.roundsWon) {
             resultTitle = 'Too bad!! You Lose';
             resultClass = 'failure';
             resultDetails = `Hello ${player01.playerName}, you lost. ${player02.playerName} won a total of ${player02.roundsWon} rounds.\nYour Current Life is ${player01.currentLife}`;
-            resultImage = 'path_to_lose_image.gif';
+            resultImage = `${gifPath}${resultClass}.gif`;
             resultAudio = 'path_to_lose_audio.mp3';
         } else {
             resultTitle = 'Awww! It\'s a draw!';
             resultClass = 'draw';
             resultDetails = `Awww! It's a draw! ${player01.playerName}, you won a total of ${player01.roundsWon} rounds.\nCurrent Life is ${player01.currentLife} \n\n$$$$$\n\n${player02.playerName} won a total of ${player02.roundsWon} rounds.\nCurrent Life is ${player02.currentLife}`;
-            resultImage = 'path_to_draw_image.gif'; // Path to the draw image
+            resultImage = `${gifPath}${resultClass}.gif`;
             resultAudio = 'path_to_draw_audio.mp3'; // Path to the draw audio
         }
     } else {
         resultTitle = 'Game is still ongoing';
         resultClass = 'draw';
         resultDetails = `The game is ongoing. ${player01.playerName} won ${player01.roundsWon} rounds and ${player02.playerName} won ${player02.roundsWon} rounds.`;
-        resultImage = 'path_to_ongoing_image.gif'; // Path to the ongoing game image
-        resultAudio = 'path_to_ongoing_audio.mp3'; // Path to the ongoing game audio
+        resultImage = `${gifPath}${resultClass}.gif`;
+        resultAudio = 'path_to_ongoing_audio.mp3';
     }
 
     // Update the content and class of the popup
@@ -465,18 +406,16 @@ function gameEnded() {
     $endGameImage.attr('src', resultImage);
     $endGameAudio.attr('src', resultAudio)[0].play();
 
-    // Display the end-game popup
-    $endGame.css('display', 'block').css('opacity', '1');
-
-    saveGameState();
+    clearInterval(roundIntervalId);
+    closeRoundResult();
     openEndGame();
+    saveGameState();
     disableControls();
     displayGameHistory();
     closeExitGame();
     closeCurrentRound();
     closePreRound();
     closeRoundCountdown();
-    closeRoundResult();
     currentRound = 0;
     player01Wins = 0;
     player02Wins = 0;
@@ -491,8 +430,8 @@ function gameEnded() {
 
 function resetGame() {
 
-
-    // $players.append(player02.$element);
+    player01 = player01;
+    player02 = player02;
 
     player01.$element.css({ top: player01.position.top + 'px', left: player01.position.left + 'px' });
     player02.$element.css({ top: player02.position.top + 'px', left: player02.position.left + 'px' });
@@ -503,25 +442,6 @@ function disableControls() {
     $controls.attr('disabled', true);
     $(document).off('keydown');
     clearInterval(player02IntervalId);
-}
-
-function displayGameHistory() {
-    $gameHistoryList.empty();
-
-    let gameStates = JSON.parse(localStorage.getItem('gameStates')) || [];
-
-    if (gameStates.length === 0) {
-        $gameHistoryList.append(`<li class='no-marker'><p>No games played yet.</p></li>`);
-        $deleteButton.hide();
-        return;
-    }
-
-    gameStates.forEach(game => {
-        const listItem = `<li>Game ${game.id} - ${game.timestamp} $$$$$$$ Status: ${game.status} $$$$$$$ Winner: ${game.winner}</li>`;
-        $gameHistoryList.append(listItem);
-    });
-
-    $deleteGame.show();
 }
 
 
@@ -660,12 +580,14 @@ function getFormattedTimestamp() {
 
 function handleAttack(attackingPlayer, move, opponent) {
     if (!opponent) {
+        endRound();
         console.error("Opponent is undefined or null.");
         return;
     }
 
     if (attackingPlayer.currentLife <= minLife || opponent.currentLife <= minLife) {
         console.log('Game over or invalid attack.');
+        endRound();
         return;
     }
 
@@ -730,8 +652,8 @@ function handleAttack(attackingPlayer, move, opponent) {
 
 function updatePlayerImage(player, move) {
     // Define the image path based on the attack move
-    const imagePath = `./resources/gifs/`;
-    const img = `${imagePath}${move}.gif`
+
+    const img = `${gifPath}${move}.gif`
     console.log(img)
     const $player = $(`#${player}`);
     const $playerImg = $player.find('img');
@@ -742,7 +664,7 @@ function updatePlayerImage(player, move) {
 
     // Remove the image update after 1 second
     setTimeout(function () {
-        $playerImg.attr('src', `${imagePath}standing.gif`); // Reset to default image
+        $playerImg.attr('src', `${gifPath}standing.gif`); // Reset to default image
     }, 1000);
 }
 
@@ -782,3 +704,103 @@ function updatePlayerPosition(player) {
     player.updatePosition(newLeft, newTop);
     console.log(`${player.getId()} - ${player.playerName}'s position updated: Width: ${newLeft}px, Height: ${newTop}px`);
 }
+
+
+function saveGameState() {
+    let gameStates = JSON.parse(localStorage.getItem('gameStates')) || [];
+    let gameStatus = determineGameStatus();
+    let winner = determineGameWinner();
+
+    // Create the game state object
+    const gameState = {
+        id: gameStates.length + 1,
+        timestamp: getFormattedTimestamp(),
+        player: {
+            position: player01.position,
+            life: player01.currentLife,
+            combo: player01.currentCombo,
+            roundsWon: player01Wins,
+        },
+        computer: {
+            position: player02.position,
+            life: player02.currentLife,
+            combo: player02.currentCombo,
+            roundsWon: player02Wins,
+        },
+        status: gameStatus,
+        currentRound: currentRound,
+        maxRounds: maxRounds,
+        winner: winner,
+        totalRoundWon: winner === player01.playerName ? player01Wins : player02Wins,
+    };
+
+    // Update ongoing game or add new game state
+    let ongoingGameIndex = gameStates.findIndex(game => game.status === 'inProgress');
+    if (ongoingGameIndex >= 0) {
+        gameStates[ongoingGameIndex] = { ...gameStates[ongoingGameIndex], ...gameState };
+    } else {
+        gameStates.push(gameState);
+    }
+
+    // Save the updated game states
+    localStorage.setItem('gameStates', JSON.stringify(gameStates));
+    displayGameHistory();
+}
+
+
+function displayGameHistory() {
+    $gameHistoryList.empty();
+
+    let gameStates = JSON.parse(localStorage.getItem('gameStates')) || [];
+
+    if (gameStates.length === 0) {
+        $gameHistoryList.append(`<li class='no-marker'><p>No games played yet.</p></li>`);
+        $deleteButton.hide();
+        return;
+    }
+
+    // Create table structure
+    let table = `<table>
+    <thead>
+        <tr>
+            <th>Game ID</th>
+            <th>Timestamp</th>
+            <th>Status</th>
+            <th>Winner</th>
+            <th>Player Details</th>
+            <th>Computer Details</th>
+        </tr>
+    </thead>
+    <tbody>`;
+
+    gameStates.forEach(game => {
+        table += `<tr>
+    <td data-label="Game ID">${game.id}</td>
+    <td data-label="Timestamp">${game.timestamp}</td>
+    <td data-label="Status">${game.status}</td>
+    <td data-label="Winner">${game.winner}</td>
+    <td data-label="Player Details">
+        <ul>
+           <li>Position: Left: ${game.player.position.left}px. Top: ${game.player.position.top}px</li>
+            <li>Life: ${game.player.life}</li>
+            <li>Combo: ${game.player.combo}</li>
+            <li>Rounds Won: ${game.player.roundsWon}</li>
+        </ul>
+    </td>
+    <td data-label="Computer Details">
+        <ul>
+            <li>Position: Left: ${game.computer.position.left}px. Top: ${game.computer.position.top}px</li>
+            <li>Life: ${game.computer.life}</li>
+            <li>Combo: ${game.computer.combo}</li>
+            <li>Rounds Won: ${game.computer.roundsWon}</li>
+        </ul>
+    </td>
+  </tr>`;
+    });
+
+    table += `</tbody></table>`;
+
+    $gameHistoryList.append(table);
+    $deleteGame.show();
+}
+

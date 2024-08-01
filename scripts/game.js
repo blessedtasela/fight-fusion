@@ -20,14 +20,14 @@ $continueResumeGame.click(continueGame);
 $startResumeNewGame.click(beginGame)
 $closeExitGame.click(closeExitGame);
 $cancelExitGame.click(closeExitGame);
-$finishExitGame.click(gameEnded);
+$finishExitGame.click(endGame);
 $endGameNewGame.click(beginGame);
 $cancelEndGame.click(closeEndGame);
 $closeEndGame.click(closeEndGame);
 $closeRoundResult.click(closeRoundResult);
 $nextRound.click(startRound);
-$roundEndGame.click(gameEnded);
-
+$roundEndGame.click(endGame);
+$gameData.removeClass('disabled');
 
 // openRoundCountdown()
 
