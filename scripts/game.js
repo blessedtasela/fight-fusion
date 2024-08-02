@@ -27,7 +27,6 @@ $closeEndGame.click(closeEndGame);
 $closeRoundResult.click(closeRoundResult);
 $nextRound.click(startRound);
 $roundEndGame.click(endGame);
-$gameData.removeClass('disabled');
 
 // openRoundCountdown()
 

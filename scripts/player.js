@@ -1,6 +1,6 @@
 
 class Player {
-    constructor(elementId, position, controls, name = 'Baki', life = 15, combo = 3) {
+    constructor(elementId, position, controls, name = defaultName, life = maxLife, combo = maxCombo) {
         this.$element = $(elementId);
         this.position = position;
         this.offset = this.$element.position()
@@ -18,7 +18,7 @@ class Player {
         this.isBlocking = false;
         this.attackValue = initAttackValue;
         this.roundsWon = initRoundWon;
-        this.attackMove = 'still';
+        this.attackMove = defaultAttack;
     }
 
 

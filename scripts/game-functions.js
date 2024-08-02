@@ -173,15 +173,11 @@ function closeAllPopupsExceptRoundResult() {
     $currentRound.css('display', 'none').css('opacity', '0');
     $preRound.css('display', 'none').css('opacity', '0');
     $deleteAllGames.css('display', 'none').css('opacity', '0');
-    // $roundResult.css('display', 'none').css('opacity', '0');
+
 
     // Restore main and gameData classes
     $main.removeClass('overlay disabled');
     $gameData.removeClass('disabled');
-
-    // Reset game controls and states
-    // $play.removeClass('hide');
-    // $exit.removeClass('hide');
 }
 
 
@@ -195,9 +191,9 @@ function determineGameStatus() {
 }
 
 function determineGameWinner() {
-    if (player01Wins >= 2) {
+    if (player01Wins >= playerWinRounds) {
         return player01.playerName;
-    } else if (player02Wins >= 2) {
+    } else if (player02Wins >= playerWinRounds) {
         return player02.playerName;
     } else if (currentRound >= maxRounds && player01Wins !== player02Wins) {
         return player01Wins > player02Wins ? player01.playerName : player02.playerName;
@@ -207,9 +203,15 @@ function determineGameWinner() {
 }
 
 function startRound() {
+
     closeRoundResult();
-    if (player01Wins >= 2 || player02Wins >= 2 || (player01Wins + player02Wins == initMaxRound && currentRound == maxRounds)) {
-        gameEnded();
+    player01 = new Player($player01, playerPosition, {}, 'Samson');
+    player02 = new Player($player02, computerPosition, {}, 'Computer');
+    updatePlayerPosition(player01);
+    updatePlayerPosition(player02);
+
+    if (((player01Wins >= playerWinRounds || player02Wins >= playerWinRounds) && currentRound >= initMaxRound) || (player01Wins + player02Wins === initMaxRound && currentRound === maxRounds)) {
+        endGame();
     } else {
         currentRound++;
         if (currentRound > maxRounds) {
@@ -222,6 +224,7 @@ function startRound() {
 
 // Method to start the pre-round countdown
 function startPreRound() {
+    closeRoundResult();
     let countdown = preRoundCount;
     displayCurrentRoundInfo();
 
@@ -245,19 +248,21 @@ function isRoundOver() {
 
 
 function endRound() {
-    // Check if a player has won the required number of rounds or if the max rounds are reached
-    if (player01Wins >= playerWinRounds || player02Wins >= playerWinRounds || currentRound >= maxRounds) {
+    if ((player01Wins >= playerWinRounds || player02Wins >= playerWinRounds) && currentRound >= initMaxRound) {
         endGame();
+        console.log('first condition GameEnded')
+    } else if (currentRound >= maxRounds) {
+        endGame();
+        console.log('second condition GameEnded')
     } else {
         showRoundResult();
+        console.log('third condition showRoundResult')
     }
 
-    closeRoundCountdown();
     closeAllPopupsExceptRoundResult();
     disableControls();
     saveGameState();
 }
-
 
 
 
@@ -405,17 +410,15 @@ function endGame() {
     $endGameDetails.text(resultDetails).addClass(resultClass);
     $endGameImage.attr('src', resultImage);
     $endGameAudio.attr('src', resultAudio)[0].play();
+    $endGame.css('display', 'block').css('opacity', '1');
 
     clearInterval(roundIntervalId);
     closeRoundResult();
-    openEndGame();
-    saveGameState();
     disableControls();
     displayGameHistory();
     closeExitGame();
     closeCurrentRound();
     closePreRound();
-    closeRoundCountdown();
     currentRound = 0;
     player01Wins = 0;
     player02Wins = 0;
@@ -519,35 +522,6 @@ function checkForUnfinishedGame() {
 }
 
 
-function continueGame() {
-    // $resumeGame.css('display', 'none').css('opacity', '0');
-
-    console.log('in continue game')
-    let gameStates = JSON.parse(localStorage.getItem('gameStates')) || [];
-    const unfinishedGame = gameStates.find(game => game.isGameInProgress);
-
-    if (unfinishedGame) {
-        console.log('in unfinished game')
-        player01.position = unfinishedGame.player.position;
-        player01.currentLife = unfinishedGame.player.life;
-        player01.currentCombo = unfinishedGame.player.combo;
-
-        player02.position = unfinishedGame.computer.position;
-        player02.currentLife = unfinishedGame.computer.life;
-        player02.currentCombo = unfinishedGame.computer.combo;
-
-        player01.updatePosition(player01.position.left, player01.position.top);
-        player02.updatePosition(player02.position.left, player02.position.top);
-
-        currentRound = unfinishedGame.currentRound;
-        console.log('Resuming game from saved state:', unfinishedGame);
-    }
-
-    console.log('in about to begin game');
-
-    beginGame();
-}
-
 function startNewGame() {
     isRoundEnded = false;
     startRound();
@@ -640,7 +614,6 @@ function handleAttack(attackingPlayer, move, opponent) {
         }
 
         console.log('Opponent\'s life reduced');
-        saveGameState();
 
     } else {
         console.log('Attack is not effective');
@@ -706,6 +679,35 @@ function updatePlayerPosition(player) {
 }
 
 
+function continueGame() {
+    // $resumeGame.css('display', 'none').css('opacity', '0');
+
+    console.log('in continue game')
+    let gameStates = JSON.parse(localStorage.getItem('gameStates')) || [];
+    const unfinishedGame = gameStates.find(game => game.isGameInProgress);
+
+    if (unfinishedGame) {
+        console.log('in unfinished game')
+        player01.position = unfinishedGame.player.position;
+        player01.currentLife = unfinishedGame.player.life;
+        player01.currentCombo = unfinishedGame.player.combo;
+
+        player02.position = unfinishedGame.computer.position;
+        player02.currentLife = unfinishedGame.computer.life;
+        player02.currentCombo = unfinishedGame.computer.combo;
+
+        player01.updatePosition(player01.position.left, player01.position.top);
+        player02.updatePosition(player02.position.left, player02.position.top);
+
+        currentRound = unfinishedGame.currentRound;
+        console.log('Resuming game from saved state:', unfinishedGame);
+    }
+
+    console.log('in about to begin game');
+
+    beginGame();
+}
+
 function saveGameState() {
     let gameStates = JSON.parse(localStorage.getItem('gameStates')) || [];
     let gameStatus = determineGameStatus();
@@ -734,18 +736,17 @@ function saveGameState() {
         totalRoundWon: winner === player01.playerName ? player01Wins : player02Wins,
     };
 
-    // Update ongoing game or add new game state
-    let ongoingGameIndex = gameStates.findIndex(game => game.status === 'inProgress');
-    if (ongoingGameIndex >= 0) {
-        gameStates[ongoingGameIndex] = { ...gameStates[ongoingGameIndex], ...gameState };
-    } else {
-        gameStates.push(gameState);
-    }
+    // Remove any existing game with status 'gameInProgress'
+    gameStates = gameStates.filter(game => game.status !== gameInProgress);
+
+    // Add the new or updated game state
+    gameStates.push(gameState);
 
     // Save the updated game states
     localStorage.setItem('gameStates', JSON.stringify(gameStates));
     displayGameHistory();
 }
+
 
 
 function displayGameHistory() {
@@ -755,7 +756,7 @@ function displayGameHistory() {
 
     if (gameStates.length === 0) {
         $gameHistoryList.append(`<li class='no-marker'><p>No games played yet.</p></li>`);
-        $deleteButton.hide();
+        $deleteGame.hide();
         return;
     }
 
@@ -763,22 +764,24 @@ function displayGameHistory() {
     let table = `<table>
     <thead>
         <tr>
-            <th>Game ID</th>
-            <th>Timestamp</th>
+            <th>SN</th>
+            <th>Date</th>
             <th>Status</th>
             <th>Winner</th>
+            <th>Current Round</th>
             <th>Player Details</th>
             <th>Computer Details</th>
         </tr>
     </thead>
     <tbody>`;
 
-    gameStates.forEach(game => {
+    gameStates.forEach((game, index) => {
         table += `<tr>
-    <td data-label="Game ID">${game.id}</td>
-    <td data-label="Timestamp">${game.timestamp}</td>
+    <td data-label="SN">${index++}</td>
+    <td data-label="Date">${game.timestamp}</td>
     <td data-label="Status">${game.status}</td>
     <td data-label="Winner">${game.winner}</td>
+    <td data-label="Current Round">${game.currentRound}</td>
     <td data-label="Player Details">
         <ul>
            <li>Position: Left: ${game.player.position.left}px. Top: ${game.player.position.top}px</li>
