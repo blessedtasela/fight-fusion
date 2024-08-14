@@ -3,7 +3,6 @@ class Player {
     constructor(elementId, position, controls, name = defaultName, life = maxLife, combo = maxCombo) {
         this.$element = $(elementId);
         this.position = position;
-        this.offset = this.$element.position()
         this.width = this.$element.outerWidth();
         this.height = this.$element.outerHeight();
         this.currentWidthOffset = this.position.left;
@@ -11,7 +10,6 @@ class Player {
         this.controls = controls;
         this.currentDirection = null;
         this.moveProperties = {};
-        this.offset = this.$element.position();
         this.currentLife = life;
         this.currentCombo = combo;
         this.playerName = name;
@@ -19,6 +17,8 @@ class Player {
         this.attackValue = initAttackValue;
         this.roundsWon = initRoundWon;
         this.attackMove = defaultAttack;
+        this.defaultLeft = this.position.left;
+        this.defaultTop = this.position.top;
     }
 
 
@@ -156,12 +156,10 @@ class Player {
         handleAttack(this, move, opponent);
     }
 
-    reset() {
-        this.currentWidthOffset = this.position.left || 0;
-        this.currentHeightOffset = this.position.top || 0;
+    resetPlayerPosition() {
         this.moveProperties = {
-            left: this.currentWidthOffset + 'px',
-            top: this.currentHeightOffset + 'px',
+            left: this.defaultLeft + 'px',
+            top: this.defaultTop + 'px',
         };
 
         this.$element.css({
@@ -174,6 +172,25 @@ class Player {
 
     getId() {
         return this.$element.attr('id');
+    }
+
+    updateLife(newLife) {
+        this.currentLife = newLife;
+    }
+
+    updateCombo(newCombo) {
+        this.currentCombo = newCombo;
+    }
+
+    updateRoundsWon() {
+        this.roundsWon += 1;
+    }
+
+    resetRoundStats() {
+        this.currentLife = maxLife;
+        this.currentCombo = maxCombo;
+        this.attackMove = defaultAttack;
+        this.resetPlayerPosition();
     }
 
 }

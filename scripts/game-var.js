@@ -119,6 +119,7 @@ const roundWin = 'wins this round!';
 const roundLose = 'lose this round!';
 const roundDraw = 'Round is a draw!';
 const gifPath = `./resources/gifs/`;
+const audioPath = `./resources/audios/`;
 
 const playerPosition = {
     top: 0,

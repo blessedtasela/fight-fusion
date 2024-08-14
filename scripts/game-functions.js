@@ -205,10 +205,8 @@ function determineGameWinner() {
 function startRound() {
 
     closeRoundResult();
-    player01 = new Player($player01, playerPosition, {}, 'Samson');
-    player02 = new Player($player02, computerPosition, {}, 'Computer');
-    updatePlayerPosition(player01);
-    updatePlayerPosition(player02);
+    player01.resetPlayerPosition();
+    player02.resetPlayerPosition();
 
     if (((player01Wins >= playerWinRounds || player02Wins >= playerWinRounds) && currentRound >= initMaxRound) || (player01Wins + player02Wins === initMaxRound && currentRound === maxRounds)) {
         endGame();
@@ -248,6 +246,10 @@ function isRoundOver() {
 
 
 function endRound() {
+
+    disableControls();
+    countPlayerWin();
+    saveGameState();
     if ((player01Wins >= playerWinRounds || player02Wins >= playerWinRounds) && currentRound >= initMaxRound) {
         endGame();
         console.log('first condition GameEnded')
@@ -256,12 +258,10 @@ function endRound() {
         console.log('second condition GameEnded')
     } else {
         showRoundResult();
+        closeAllPopupsExceptRoundResult();
         console.log('third condition showRoundResult')
     }
 
-    closeAllPopupsExceptRoundResult();
-    disableControls();
-    saveGameState();
 }
 
 
@@ -337,16 +337,15 @@ function displayPreRoundInfo(countdown) {
     }, preRoundTimeout);
 }
 
+
 // Function to show the round result popup
 function showRoundResult() {
     let roundResult;
     let roundResultImage;
     if (player01.currentLife > player02.currentLife) {
-        player01Wins++;
         roundResult = `${player01.playerName} ${roundWin}`;
         roundResultImage = `${gifPath}round-win.gif`;
     } else if (player02.currentLife > player01.currentLife) {
-        player02Wins++;
         roundResult = `${player02.playerName} ${roundWin}`;
         roundResultImage = `${gifPath}round-lose.gif`;
     } else {
@@ -355,12 +354,24 @@ function showRoundResult() {
     }
 
     clearInterval(roundIntervalId);
+    player01.resetRoundStats();
+    player02.resetRoundStats();
 
     // Update popup content and show
     $roundResultDetails.text(roundResult);
     $roundResultImage.attr('src', roundResultImage);
     $roundResultImage.attr('alt', roundResultImage);
     $roundResult.css('display', 'block').css('opacity', '1');
+}
+
+function countPlayerWin() {
+    if (player01.currentLife > player02.currentLife) {
+        player01Wins++;
+        player01.updateRoundsWon();
+    } else if (player02.currentLife > player01.currentLife) {
+        player02Wins++;
+        player02.updateRoundsWon();
+    }
 }
 
 // Method to end the game
@@ -372,7 +383,8 @@ function endGame() {
 
     if (isGameEnded) {
         closeEndGame();
-        return
+        console.log('game is ended, return is true.');
+        return;
     }
 
     isRoundEnded = true;
@@ -384,26 +396,26 @@ function endGame() {
             resultClass = 'success';
             resultDetails = `Congratulations ${player01.playerName}! You won a total of ${player01.roundsWon} rounds.\nCurrent Life is ${player01.currentLife}`;
             resultImage = `${gifPath}${resultClass}.gif`;
-            resultAudio = 'path_to_win_audio.mp3';
+            resultAudio = `${audioPath}${resultClass}.mp3`;
         } else if (player02.roundsWon > player01.roundsWon) {
             resultTitle = 'Too bad!! You Lose';
             resultClass = 'failure';
             resultDetails = `Hello ${player01.playerName}, you lost. ${player02.playerName} won a total of ${player02.roundsWon} rounds.\nYour Current Life is ${player01.currentLife}`;
             resultImage = `${gifPath}${resultClass}.gif`;
-            resultAudio = 'path_to_lose_audio.mp3';
+            resultAudio = `${audioPath}${resultClass}.mp3`;
         } else {
             resultTitle = 'Awww! It\'s a draw!';
             resultClass = 'draw';
             resultDetails = `Awww! It's a draw! ${player01.playerName}, you won a total of ${player01.roundsWon} rounds.\nCurrent Life is ${player01.currentLife} \n\n$$$$$\n\n${player02.playerName} won a total of ${player02.roundsWon} rounds.\nCurrent Life is ${player02.currentLife}`;
             resultImage = `${gifPath}${resultClass}.gif`;
-            resultAudio = 'path_to_draw_audio.mp3'; // Path to the draw audio
+            resultAudio = `${audioPath}${resultClass}.mp3`;
         }
     } else {
         resultTitle = 'Game is still ongoing';
         resultClass = 'draw';
         resultDetails = `The game is ongoing. ${player01.playerName} won ${player01.roundsWon} rounds and ${player02.playerName} won ${player02.roundsWon} rounds.`;
         resultImage = `${gifPath}${resultClass}.gif`;
-        resultAudio = 'path_to_ongoing_audio.mp3';
+        resultAudio = `${audioPath}${resultClass}.mp3`;
     }
 
     // Update the content and class of the popup
@@ -411,6 +423,7 @@ function endGame() {
     $endGameImage.attr('src', resultImage);
     $endGameAudio.attr('src', resultAudio)[0].play();
     $endGame.css('display', 'block').css('opacity', '1');
+    $roundCountDown.css('display', 'none').css('opacity', '0');
 
     clearInterval(roundIntervalId);
     closeRoundResult();
@@ -455,8 +468,7 @@ function enableControls() {
     }
 
     $controls.attr('disabled', false);
-
-    // Automatically control player02 at intervals
+    $(document).on('keydown');
     player02IntervalId = setInterval(player02Controls, player02Interval);
 }
 
@@ -467,7 +479,7 @@ function player02Controls() {
     const directions = ['left', 'right', 'up', 'down'];
     const attacks = ['punch', 'kick', 'block', 'combo'];
     const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-    const randomAttack = attacks[Math.floor(Math.random() * directions.length)];
+    const randomAttack = attacks[Math.floor(Math.random() * attacks.length)];
     player02.move(randomDirection, player01);
     player02.attack(randomAttack, player01);
 }
@@ -667,17 +679,42 @@ function isColliding(player1, player2) {
     return collisionX;
 }
 
-function updatePlayerPosition(player) {
+function updatePlayerPosition() {
     const containerWidth = $playerArea.width();
     const containerHeight = $playerArea.height();
 
-    let newLeft = Math.max(0, Math.min(containerWidth - player.width, player.currentWidthOffset));
-    let newTop = Math.max(0, Math.min(containerHeight - player.height, player.currentHeightOffset));
+    // Recalculate offsets based on container size
+    player01.currentWidthOffset = containerWidth * (player01.currentWidthOffset / player01.width);
+    player01.currentHeightOffset = containerHeight * (player01.currentHeightOffset / player01.height);
 
-    player.updatePosition(newLeft, newTop);
-    console.log(`${player.getId()} - ${player.playerName}'s position updated: Width: ${newLeft}px, Height: ${newTop}px`);
+    // Calculate new position based on updated offsets
+    let newLeft = Math.max(0, Math.min(containerWidth - player01.width, player01.currentWidthOffset));
+    let newTop = Math.max(0, Math.min(containerHeight - player01.height, player01.currentHeightOffset));
+
+    player01.updatePosition(newLeft, newTop);
+    console.log(`${player01.getId()} - ${player01.playerName}'s position updated: Width: ${newLeft}px, Height: ${newTop}px`);
 }
 
+function updateComputerPosition() {
+    const containerWidth = $playerArea.width();
+    const containerHeight = $playerArea.height();
+
+    // Recalculate offsets based on container size
+    player02.currentWidthOffset = containerWidth * (player02.currentWidthOffset / player02.width);
+    player02.currentHeightOffset = containerHeight * (player02.currentHeightOffset / player02.height);
+
+    // Calculate new position based on updated offsets
+    let newLeft = Math.max(0, Math.min(containerWidth - player02.width, player02.currentWidthOffset));
+    let newTop = Math.max(0, Math.min(containerHeight - player02.height, player02.currentHeightOffset));
+
+    player02.updatePosition(newLeft, newTop);
+    console.log(`${player02.getId()} - ${player02.playerName}'s position updated: Width: ${newLeft}px, Height: ${newTop}px`);
+}
+
+function updatePlayersPosition() {
+    updatePlayerPosition();
+    updateComputerPosition();
+}
 
 function continueGame() {
     // $resumeGame.css('display', 'none').css('opacity', '0');

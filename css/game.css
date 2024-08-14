@@ -105,6 +105,10 @@ button:hover {
     position: relative;
 }
 
+.result-img {
+    width: 50%;
+}
+
 .player-hit {
     display: flex;
     margin-bottom: 30%;
@@ -454,12 +458,14 @@ button[disabled].move-btn {
     }
 
 }
+
 #game-history-list table {
     width: 100%;
     border-collapse: collapse;
 }
 
-#game-history-list th, #game-history-list td {
+#game-history-list th,
+#game-history-list td {
     border: 1px solid #ddd;
     padding: 8px;
 }
@@ -473,7 +479,12 @@ button[disabled].move-btn {
 
 /* Responsive styling */
 @media screen and (max-width: 850px) {
-    #game-history-list table, #game-history-list tbody, #game-history-list th, #game-history-list td, #game-history-list tr {
+
+    #game-history-list table,
+    #game-history-list tbody,
+    #game-history-list th,
+    #game-history-list td,
+    #game-history-list tr {
         display: block;
     }
 
