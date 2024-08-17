@@ -3,7 +3,6 @@
 feather.replace();
 displayGameHistory();
 checkForUnfinishedGame();
-disableControls();
 updatePlayersPosition();
 $deleteGame.click(openDeleteAllGames);
 $deleteDeleteAllGames.click(deleteAllSavedGames);
@@ -27,12 +26,13 @@ $closeRoundResult.click(closeRoundResult);
 $nextRound.click(startRound);
 $roundEndGame.click(endGame);
 
-// openRoundCountdown()
-
+updatePlayersLife();
 
 $(window).resize(function () {
     updatePlayersPosition();
 });
+
+$gameAudio[0].volume = 0.1; // Set volume to 30% of the maximum
 
 $showGameHistory.click(function () {
     $gameHistory.slideToggle(800);
@@ -99,3 +99,4 @@ $(document).keydown(function (e) {
     }
 });
 
+disableControls(); 

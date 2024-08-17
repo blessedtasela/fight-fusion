@@ -36,6 +36,7 @@
     <script src="./scripts/game.js" defer></script>
 
 <body id="wrapper">
+    <audio id="game-audio" src="./resources/audios/game-play.mp3" autoplay loop></audio>
     <nav class="navbar" id="nav">
         <div class="flex-display">
             <span><i data-feather="square" class="txt-main"></i></span>
@@ -70,14 +71,19 @@
     <section class="game-container" id="main">
         <div class="game-box-area ">
             <div class="player-area">
-
                 <div class="player" id="players">
                     <div id="player01">
+                        <audio id="player01-audio"></audio>
                         <div id="player01Hit" class="flex-display player-hit"></div>
+                        <span class="life default-life"> </span>
+                        <span class="life" id="player01-life"></span>
                         <img class="player01 bounce " src="./resources/gifs/standing.gif">
                     </div>
                     <div id="player02">
+                        <audio id="player02-audio"></audio>
                         <div id="player02Hit" class="flip-opposite flex-display player-hit"></div>
+                        <span class="life default-life"> </span>
+                        <span class="life" id="player02-life"></span>
                         <img class="player02 bounce" src="./resources/gifs/standing.gif">
                     </div>
                 </div>
@@ -122,9 +128,8 @@
 
 
     <div id="round-result" class="popup">
-        <span id="close-round-result" class="close-popup hide">&times;</span>
         <div class="flex-display">
-            <img id="round-result-image" class="reduce-img">
+            <img id="round-result-image" class="result-img">
         </div>
         <h2 id="end-game-header" class="flex-display">Round Result</h2>
         <p id="round-result-details">Game details here</p>
@@ -132,13 +137,12 @@
             <button id="next-round">Next Round</button>
             <button id="round-end-game">End Game</button>
         </div>
-        <audio id="round-result-audio" src=""></audio>
+        <audio id="round-result-audio"></audio>
     </div>
 
     <div id="end-game" class="popup">
-        <span id="close-end-game" class="close-popup">&times;</span>
         <div class="flex-display">
-            <img id="end-game-image" class="result-img" src="" alt="Game Result Image">
+            <img id="end-game-image" class="end-result-img">
         </div>
         <h2 id="end-game-header" class="flex-display">Game Over</h2>
         <p id="end-game-details">Game details here</p>
@@ -199,10 +203,11 @@
         </div>
     </div>
 
-    <div id="round-count-down" class="count-down-popup">
-        <div class="flex-display" id="count-down">
+    <div id="count-down" class="count-down-popup">
+        <div class="flex-display" id="round-count-down">
             00:00s
         </div>
+        <audio id="round-start-audio"></audio>
     </div>
 
     <div id="current-round" class="count-down-popup">

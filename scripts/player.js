@@ -23,119 +23,34 @@ class Player {
 
 
     move(direction, opponent) {
-
         let newLeft = this.currentWidthOffset;
         let newTop = this.currentHeightOffset;
 
-
-        let playerWidth = this.currentWidthOffset;
-        let playerHeight = this.currentHeightOffset;
-        let moveProperties = {
-            left: this.currentWidthOffset + 'px',
-            top: this.currentHeightOffset + 'px',
-        };
+        const containerWidth = $playerArea.width();
+        const containerHeight = $playerArea.height();
+        const moveAmount = 0.05 * containerWidth; // Move by 5% of container width
 
         switch (direction) {
             case 'up':
                 this.currentDirection = direction;
-                if (this.currentHeightOffset <= parentHeight + playerHeight) {
-                    if (this.currentHeightOffset > -playerHeightOffset) {
-
-                        // Animate up
-                        let upPosition = this.currentHeightOffset - playerHeightOffset;
-                        let downPosition = upPosition + playerHeightOffset;
-
-                        // Animate up
-                        this.$element.animate({ top: upPosition + 'px' }, duration, 'linear', () => {
-                            // Move back down
-                            this.$element.animate({ top: downPosition + 'px' }, duration, 'linear', () => {
-                                console.log('Bounced back to original position');
-                            });
-                        });
-
-                        // Update the current height offset
-                        this.currentHeightOffset = downPosition;
-                    }
-                }
-
+                newTop = Math.max(0, this.currentHeightOffset - moveAmount);
                 break;
             case 'down':
                 this.currentDirection = direction;
-                console.log('  to change the image here');
                 break;
-
             case 'left':
-
                 this.currentDirection = direction;
-                if (this.currentWidthOffset <= parentWidth + playerWidth) {
-                    if (this.currentWidthOffset > -playerWidthOffset) {
-                        if (this.position.hasOwnProperty('right')) {
-                            console.log('has right')
-                            playerWidth = this.position.right;
-                        }
-
-                        this.currentWidthOffset = Math.min(parentWidth - playerWidth, this.currentWidthOffset - playerWidthOffset);
-                    }
-                }
+                newLeft = Math.max(0, this.currentWidthOffset - moveAmount);
                 break;
             case 'right':
-
                 this.currentDirection = direction;
-                if (this.currentWidthOffset <= parentWidth - playerWidth) {
-                    this.currentWidthOffset = Math.min(parentWidth - playerWidth, this.currentWidthOffset + playerWidthOffset);
-                }
+                newLeft = Math.min(containerWidth - this.width, this.currentWidthOffset + moveAmount);
                 break;
         }
 
-        if (isColision) {
-            console.log('Collision detected');
-            console.log('currentWidth: ', this.currentWidthOffset);
-            console.log('newLeft: ', newLeft);
-
-            // Total width occupied by both players
-            const totalWidth = this.width + opponent.width;
-
-            // Determine if the movement direction is towards the opponent
-            if ((direction === 'left' && this.currentWidthOffset > opponent.currentWidthOffset) ||
-                (direction === 'right' && this.currentWidthOffset < opponent.currentWidthOffset)) {
-
-                // Calculate the maximum allowed position to avoid overlap
-                let maxPosition;
-                if (direction === 'left') {
-                    maxPosition = opponent.currentWidthOffset + opponent.width;
-                } else if (direction === 'right') {
-                    maxPosition = opponent.currentWidthOffset - this.width;
-                }
-
-                // Prevent moving forward beyond the maximum allowed position
-                if (direction === 'left' && newLeft < maxPosition) {
-                    newLeft = maxPosition;
-                } else if (direction === 'right' && newLeft > maxPosition) {
-                    newLeft = maxPosition;
-                }
-            }
-
-            // Ensure the new position is within bounds
-            newLeft = Math.max(0, Math.min(parentWidth - this.width, newLeft));
-            newTop = Math.max(0, Math.min(parentHeight - this.height, newTop));
-
-            // Update position and apply animation
-            this.updatePosition(newLeft, newTop);
-        }
-
-
+        // Update position and apply animation
+        this.updatePosition(newLeft, newTop);
         updatePlayerImage(this.$element.attr('id'), direction)
-
-
-        // Update moveProperties
-        this.moveProperties.left = this.currentWidthOffset + 'px';
-        this.$element.animate(moveProperties, duration, 'linear');
-
-        console.log(`Direction: ${this.currentDirection}`);
-        console.log(`Parent width: ${parentWidth}px`);
-        console.log(`Current Position: ${this.currentWidthOffset}px, ${this.currentHeightOffset}px`);
-        console.log(`Move Properties: ${JSON.stringify(moveProperties)}`);
-
     }
 
     updatePosition(left, top) {
@@ -146,9 +61,16 @@ class Player {
             top: top + 'px',
         });
 
-        this.moveProperties.left = this.currentWidthOffset + 'px';
+        // Update moveProperties
+        this.moveProperties.left = left + 'px';
         this.$element.animate(this.moveProperties, duration, 'linear');
+
+        console.log(`Direction: ${this.currentDirection}`);
+        console.log(`Parent width: ${parentWidth}px`);
+        console.log(`Current Position: ${this.currentWidthOffset}px, ${this.currentHeightOffset}px`);
+        console.log(`Move Properties: ${JSON.stringify(this.moveProperties)}`);
     }
+
 
     // Attack the opponent
     attack(move, opponent) {
@@ -190,7 +112,13 @@ class Player {
         this.currentLife = maxLife;
         this.currentCombo = maxCombo;
         this.attackMove = defaultAttack;
-        this.resetPlayerPosition();
     }
 
+    resetPlayerStats() {
+        this.currentLife = maxLife;
+        this.currentCombo = maxCombo;
+        this.roundsWon = initRoundWon;
+        this.attackValue = initAttackValue;
+        this.attackMove = defaultAttack;
+    }
 }

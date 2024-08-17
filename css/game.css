@@ -83,14 +83,12 @@ button:hover {
     overflow: hidden;
 }
 
-
 .player-area {
-    width: 100%;
+    width: calc(100% - 4%);
     position: relative;
-    margin: 10%;
+    margin: 2% auto; 
     background-color: black;
 }
-
 
 .player {
     position: absolute;
@@ -101,12 +99,15 @@ button:hover {
 
 .player img {
     width: 100%;
-    background-color: black;
     position: relative;
 }
 
 .result-img {
     width: 50%;
+}
+
+.end-result-img {
+    width: 30%;
 }
 
 .player-hit {
@@ -120,11 +121,29 @@ button:hover {
     position: absolute;
     width: 100px;
     height: 100px;
-    margin: -20% -10%;
+    margin: -5% -10%;
 }
 
 #player02 {
     transform: scaleX(-1) !important;
+}
+
+.life {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    place-content: center;
+    bottom: 10px;
+    position: relative;
+    width: 100px;
+    height: 10px;
+    margin: 10px;
+}
+
+.default-life {
+    top: 10px;
+    opacity: 0.5;
+    background-color: white;
 }
 
 .start-end {
@@ -140,7 +159,7 @@ button:hover {
     flex-direction: row;
     justify-content: space-between;
     position: relative;
-    bottom: 15%;
+    bottom: 5%;
 }
 
 .moves {
@@ -152,7 +171,7 @@ button:hover {
     height: 130px;
     position: relative;
     border-radius: 5%;
-    background-color: #CB3F14;
+    background-color: rgba(240, 126, 73, 0.932);
 }
 
 .moves button {
@@ -187,7 +206,8 @@ button:hover {
     width: 130px;
     position: relative;
     border-radius: 50%;
-    background-color: blue;
+    background-color: rgba(255, 255, 255, 0.5);
+    
 }
 
 .button-container {
@@ -373,7 +393,6 @@ button[disabled].move-btn {
     flex-direction: column;
     text-align: start;
     max-width: 100%;
-    width: 400px;
     border: 2px solid;
     background-color: red;
     font-size: small;
@@ -389,7 +408,6 @@ button[disabled].move-btn {
     flex-direction: column;
     text-align: start;
     max-width: 100%;
-    width: 400px;
     border: 2px solid;
     background-color: gray;
     font-size: small;
@@ -404,7 +422,6 @@ button[disabled].move-btn {
     flex-direction: column;
     text-align: start;
     max-width: 100%;
-    width: 400px;
     border: 2px solid;
     background-color: green;
     font-size: small;
@@ -452,9 +469,13 @@ button[disabled].move-btn {
     background-color: #0056b3;
 }
 
-@media (max-width:800px) {
+@media (max-width:850px) {
     .game-box-area {
         margin: 5%;
+    }
+
+    .popup {
+        width: 60%;
     }
 
 }
@@ -517,6 +538,10 @@ button[disabled].move-btn {
         padding: 8px;
         box-sizing: border-box;
     }
+
+    .btns-control {
+        bottom: 15%;
+    }
 }
 
 @media screen and (max-width: 500px) {
@@ -528,4 +553,14 @@ button[disabled].move-btn {
         padding-left: 5px;
         font-size: 0.9em;
     }
+
+    .popup {
+        width: 80%;
+    }
+
+    .game-box-area {
+        margin: 2%;
+        margin-bottom: 10%;
+    }
+
 }
