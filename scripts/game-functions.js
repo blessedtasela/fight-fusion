@@ -234,9 +234,37 @@ function startPreRound() {
 
 }
 
+// function to display the current round that is about to start and proceed to begin round
+function displayPreRoundInfo(countdown) {
+    if (isRoundEnded) {
+        return; // Exit if the game has ended
+    }
+
+    $preRoundData.text(`${countdown}`);
+    openPreRound();
+
+    let interval = setInterval(() => {
+        countdown--;
+        console.log(`Round ${currentRound} starting in ${countdown}`);
+        $preRoundData.text(`${countdown}`);
+        if (countdown <= preRoundCountEnd) {
+            clearInterval(interval);
+            closePreRound();
+            if (!isRoundEnded) {
+                beginRound();
+            }
+        }
+    }, preRoundInterval);
+
+    setTimeout(() => {
+        if (!isRoundEnded) {
+            closePreRound();
+        }
+    }, preRoundTimeout);
+}
+
 // Method to start the actual round
 function beginRound() {
-    saveGameState();
     enableControls();
     let roundCountdown = roundDuration;
     console.log(`Round ${currentRound} begins!`);
@@ -287,33 +315,7 @@ function displayRoundCountdown(countdown) {
     }, roundInterval);
 }
 
-function displayPreRoundInfo(countdown) {
-    if (isRoundEnded) {
-        return; // Exit if the game has ended
-    }
 
-    $preRoundData.text(`${countdown}`);
-    openPreRound();
-
-    let interval = setInterval(() => {
-        countdown--;
-        console.log(`Round ${currentRound} starting in ${countdown}`);
-        $preRoundData.text(`${countdown}`);
-        if (countdown <= preRoundCountEnd) {
-            clearInterval(interval);
-            closePreRound();
-            if (!isRoundEnded) {
-                beginRound();
-            }
-        }
-    }, preRoundInterval);
-
-    setTimeout(() => {
-        if (!isRoundEnded) {
-            closePreRound();
-        }
-    }, preRoundTimeout);
-}
 
 
 function displayCurrentRoundInfo() {
@@ -325,24 +327,6 @@ function displayCurrentRoundInfo() {
     }, currentRoundTimeout);
 }
 
-function displayPreRoundInfo(countdown) {
-    $preRoundData.text(`${countdown}`);
-    openPreRound();
-    let interval = setInterval(() => {
-        countdown--;
-        console.log(`Round ${currentRound} starting in ${countdown}`);
-        $preRoundData.text(`${countdown}`);
-        if (countdown <= preRoundCountEnd) {
-            clearInterval(interval);
-            closePreRound();
-            beginRound();
-        }
-    }, preRoundInterval);
-
-    setTimeout(() => {
-        closePreRound();
-    }, preRoundTimeout);
-}
 
 function updatePlayerLife(player) {
     const $playerLife = $(`#${player.getId()}-life`);
@@ -386,11 +370,6 @@ function showRoundResult() {
         roundResultAudio = `${audioPath}round-draw.mp3`;
     }
 
-    clearInterval(roundIntervalId);
-    player01.resetRoundStats();
-    player02.resetRoundStats();
-    updatePlayerPosition();
-    updatePlayersLife();
 
     // Update popup content and show
     $roundResultDetails.text(roundResult);
@@ -406,6 +385,12 @@ function showRoundResult() {
         'alt': `${roundResultImage}`,
     });
     $roundResult.css('display', 'block').css('opacity', '1');
+
+    clearInterval(roundIntervalId);
+    player01.resetRoundStats();
+    player02.resetRoundStats();
+    updatePlayersPosition();
+    updatePlayersLife();
 }
 
 function countPlayerWin() {
@@ -794,14 +779,14 @@ function updatePlayerPosition() {
     const containerHeight = $playerArea.height();
 
     // Recalculate offsets based on container size
-    player01.currentWidthOffset = containerWidth * (player01.currentWidthOffset / player01.width);
+    player01.currentWidthOffset = player01.defaultLeft;
     player01.currentHeightOffset = containerHeight * (player01.currentHeightOffset / player01.height);
 
     // Calculate new position based on updated offsets
     let newLeft = Math.max(0, Math.min(containerWidth - player01.width, player01.currentWidthOffset));
     let newTop = Math.max(0, Math.min(containerHeight - player01.height, player01.currentHeightOffset));
 
-    player01.updatePosition(-newLeft, newTop);
+    player01.updatePosition(newLeft, newTop);
     console.log(`${player01.getId()} - ${player01.playerName}'s position updated: Width: ${newLeft}px, Height: ${newTop}px`);
 }
 

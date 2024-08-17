@@ -86,7 +86,7 @@ button:hover {
 .player-area {
     width: calc(100% - 4%);
     position: relative;
-    margin: 2% auto; 
+    margin: 2% auto;
     background-color: black;
 }
 
@@ -207,7 +207,7 @@ button:hover {
     position: relative;
     border-radius: 50%;
     background-color: rgba(255, 255, 255, 0.5);
-    
+
 }
 
 .button-container {
@@ -469,17 +469,6 @@ button[disabled].move-btn {
     background-color: #0056b3;
 }
 
-@media (max-width:850px) {
-    .game-box-area {
-        margin: 5%;
-    }
-
-    .popup {
-        width: 60%;
-    }
-
-}
-
 #game-history-list table {
     width: 100%;
     border-collapse: collapse;
@@ -541,6 +530,25 @@ button[disabled].move-btn {
 
     .btns-control {
         bottom: 15%;
+    }
+
+    .game-box-area {
+        margin: 5%;
+    }
+
+    .popup {
+        width: 60%;
+    }
+}
+
+@media (max-width:800px) {
+
+    .controls {
+        left: 0%;
+    }
+
+    .moves{
+        right: 0%;
     }
 }
 
