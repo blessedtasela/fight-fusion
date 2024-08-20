@@ -196,9 +196,9 @@ function determineGameStatus() {
 }
 
 function determineGameWinner() {
-    if (player01.roundsWon >= playerWinRounds) {
+    if (player01.roundsWon >= minRoundsToWIn) {
         return player01.playerName;
-    } else if (player02.roundsWon >= playerWinRounds) {
+    } else if (player02.roundsWon >= minRoundsToWIn) {
         return player02.playerName;
     } else if (currentRound >= maxRounds && player01.roundsWon !== player02.roundsWon) {
         return player01.roundsWon > player02.roundsWon ? player01.playerName : player02.playerName;
@@ -210,7 +210,7 @@ function determineGameWinner() {
 function startRound() {
 
     closeRoundResult();
-    if (((player01.roundsWon >= playerWinRounds || player02.roundsWon >= playerWinRounds) && currentRound >= initMaxRound) || (player01.roundsWon + player02.roundsWon === initMaxRound && currentRound === maxRounds)) {
+    if (((player01.roundsWon >= minRoundsToWIn || player02.roundsWon >= minRoundsToWIn) && currentRound >= initMaxRound) || (player01.roundsWon + player02.roundsWon === initMaxRound && currentRound === maxRounds)) {
         endGame();
     } else {
         currentRound++;
@@ -224,7 +224,10 @@ function startRound() {
 
 // Method to start the pre-round countdown
 function startPreRound() {
+
+    isGameEnded = false;
     closeRoundResult();
+    startGameAudio();
     let countdown = preRoundCount;
     displayCurrentRoundInfo();
 
@@ -282,7 +285,7 @@ function endRound() {
     countPlayerWin();
     updatePlayersLife();
     saveGameState();
-    if ((player01.roundsWon >= playerWinRounds || player02.roundsWon >= playerWinRounds) && currentRound >= initMaxRound) {
+    if ((player01.roundsWon >= minRoundsToWIn || player02.roundsWon >= minRoundsToWIn) && currentRound >= initMaxRound) {
         endGame();
         console.log('first condition GameEnded')
     } else if (currentRound >= maxRounds) {
@@ -407,6 +410,7 @@ function endGame() {
     let resultDetails = '';
     let resultImage = '';
     let resultAudio = '';
+    stopGameAudio();
 
     if (isGameEnded) {
         closeEndGame();
@@ -585,8 +589,6 @@ function deleteGameState() {
     localStorage.removeItem('gameState');
 }
 
-
-
 function checkForUnfinishedGame() {
     let gameStates = JSON.parse(localStorage.getItem('gameStates')) || [];
     const unfinishedGame = gameStates.find(game => game.status === gameInProgress);
@@ -612,13 +614,11 @@ function checkForUnfinishedGame() {
     }
 }
 
-
 function startNewGame() {
     isRoundEnded = false;
     startRound();
     console.log('Starting a new game');
 }
-
 
 function getFormattedTimestamp() {
     const date = new Date();
@@ -748,6 +748,19 @@ function updatePlayerImage(player, move) {
     }, 1000);
 }
 
+function startGameAudio() {
+    $gameAudio.attr({
+        'src': `${audioPath}game-play.mp3`,
+        'alt': `${audioPath}game-play.mp3`,
+        'autoplay': 'autoplay',
+        'loop': 'loop'
+    });
+}
+
+function stopGameAudio() {
+    $gameAudio[0].pause();
+    $gameAudio[0].currentTime = 0;
+}
 
 function isColliding(player1, player2) {
     const threshold = 0;
@@ -878,8 +891,6 @@ function saveGameState() {
     displayGameHistory();
 }
 
-
-
 function displayGameHistory() {
     $gameHistoryList.empty();
 
@@ -936,5 +947,21 @@ function displayGameHistory() {
 
     $gameHistoryList.append(table);
     $deleteGame.show();
+}
+
+function setGameInstructions() {
+    const instructions = `
+        <ul>
+            <li>The game lasts for ${roundDuration} seconds each round.</li>
+            <li>To win, ${playerName} must win more than ${minRoundsToWIn} rounds.</li>
+            <li>If there is a draw in the first ${maxRounds} rounds, extra rounds will be added until ${playerName} or opponent: ${computerName} wins.</li>
+            <li>${playerName} is competing against opponent: ${computerName}.</li>
+            <li>To win a round, ${playerName} must have more life points before the time elapses or defeat opponent: ${computerName}.</li>
+            <li>${playerName} can view the Game History below.</li>
+             <li>You can change ${playerName} name in the Game History below.</li>
+        </ul>
+    `;
+
+    $gameInstructions.html(instructions);
 }
 

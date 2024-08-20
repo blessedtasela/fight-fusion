@@ -487,6 +487,19 @@ button[disabled].move-btn {
     font-weight: bold;
 }
 
+.input-line {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+    justify-items: center;
+}
+
+
+input {
+    border-radius: 8px;
+}
+
 /* Responsive styling */
 @media screen and (max-width: 850px) {
 
@@ -547,7 +560,7 @@ button[disabled].move-btn {
         left: 0%;
     }
 
-    .moves{
+    .moves {
         right: 0%;
     }
 }

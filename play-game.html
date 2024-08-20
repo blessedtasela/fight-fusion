@@ -36,7 +36,7 @@
     <script src="./scripts/game.js" defer></script>
 
 <body id="wrapper">
-    <audio id="game-audio" src="./resources/audios/game-play.mp3" autoplay loop></audio>
+    <audio id="game-audio" src="./resources/audios/" loop></audio>
     <nav class="navbar" id="nav">
         <div class="flex-display">
             <span><i data-feather="square" class="txt-main"></i></span>
@@ -120,10 +120,17 @@
             <i data-feather="arrow-up" class=""></i>
         </div>
         <h2 class="p-top-btm">Game History</h2>
+        <div class="input-line">
+            <h3 id="player-name-updated"></h3>
+            <label for="update-player-name">Change Player Name</label>
+            <input name="update-player-name" id="update-player-name" type="text"
+                placeholder="Type here to change player name">
+        </div>
         <div id="game-history" class="hide">
             <div id="game-history-list"></div>
             <button id="delete-game">Delete All Games</button>
         </div>
+    </div>
     </div>
 
 
@@ -166,17 +173,7 @@
     <div id="start-game" class="popup">
         <span id="close-start-game" class="close-popup">&times;</span>
         <H2>Please read the instructions carefully</H2>
-        <div class="success">
-            <ul>
-                <li>The game lasts for 10 seconds each round.</li>
-                <li>To win, the player must win more than 2 rounds.</li>
-                <li>If there is a draw in the first 3 rounds, extra rounds will be added until a player wins.</li>
-                <li>The player is competing against the computer.</li>
-                <li>To win a round, the player must have more life points before the time elapses or defeat the other
-                    player.</li>
-                <li>Players can view the game history below.</li>
-            </ul>
-        </div>
+        <div class="success" id="game-instructions"> </div>
         <div class="flex-display">
             <button id="start-new-game">Play</button>
             <button id="cancel-start-game">Cancel</button>

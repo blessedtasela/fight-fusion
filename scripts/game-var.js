@@ -69,6 +69,7 @@ const $currentRoundData = $('#current-round-data');
 const $preRound = $('#pre-round');
 const $preRoundData = $('#pre-round-data');
 const $controls = $('.direction-btn, .move-btn');
+const $gameInstructions = $('#game-instructions');
 
 let player02IntervalId;
 let roundIntervalId;
@@ -87,6 +88,8 @@ let preRoundCount = 3;
 let isGameEnded = false;
 let isRoundEnded = false;
 let isWinner;
+let playerName = 'Player';
+let computerName = 'Computer';
 
 const initCombo = 0;
 const initRoundWon = 0;
@@ -107,7 +110,7 @@ const minLife = 0;
 const singleHit = 1;
 const comboHit = 3;
 const blockHit = 0;
-const playerWinRounds = 2;
+const minRoundsToWIn = 2;
 const duration = 500;
 const playerWidthOffset = 50;
 const playerHeightOffset = 100;
@@ -123,7 +126,6 @@ const gameInProgress = 'in-progress';
 const gameFinished = 'finished';
 const gameDrawn = 'draw';
 const defaultAttack = 'still';
-const defaultName = 'Baki';
 const roundWin = 'wins this round!';
 const roundLose = 'lose this round!';
 const roundDraw = 'Round is a draw!';
@@ -144,5 +146,5 @@ const computerPosition = {
 
 
 // Create Player and Computer instances
-let player01 = new Player($player01, playerPosition, {}, 'Samson');
-let player02 = new Player($player02, computerPosition, {}, 'Computer');
+let player01 = new Player($player01, playerPosition, {}, playerName);
+let player02 = new Player($player02, computerPosition, {}, computerName);

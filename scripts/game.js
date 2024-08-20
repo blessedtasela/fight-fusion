@@ -32,6 +32,8 @@ $(window).resize(function () {
     updatePlayersPosition();
 });
 
+setGameInstructions();
+
 $gameAudio[0].volume = 0.1; // Set volume to 30% of the maximum
 
 $showGameHistory.click(function () {

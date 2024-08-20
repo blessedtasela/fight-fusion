@@ -1,6 +1,6 @@
 
 class Player {
-    constructor(elementId, position, controls, name = defaultName, life = maxLife, combo = maxCombo) {
+    constructor(elementId, position, controls, name, life = maxLife, combo = maxCombo) {
         this.$element = $(elementId);
         this.position = position;
         this.width = this.$element.outerWidth();
