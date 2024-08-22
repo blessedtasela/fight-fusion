@@ -70,6 +70,9 @@ const $preRound = $('#pre-round');
 const $preRoundData = $('#pre-round-data');
 const $controls = $('.direction-btn, .move-btn');
 const $gameInstructions = $('#game-instructions');
+const $updatePlayerName = $('#update-player-name');
+const $player01Name = $('#player01-name');
+const $player02Name = $('#player02-name');
 
 let player02IntervalId;
 let roundIntervalId;

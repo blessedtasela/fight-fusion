@@ -74,6 +74,7 @@
                 <div class="player" id="players">
                     <div id="player01">
                         <audio id="player01-audio"></audio>
+                        <div class="player-name" id="player01-name"> </div>
                         <div id="player01Hit" class="flex-display player-hit"></div>
                         <span class="life default-life"> </span>
                         <span class="life" id="player01-life"></span>
@@ -81,6 +82,7 @@
                     </div>
                     <div id="player02">
                         <audio id="player02-audio"></audio>
+                        <div class="player-names flip-opposite" id="player02-name"> </div>
                         <div id="player02Hit" class="flip-opposite flex-display player-hit"></div>
                         <span class="life default-life"> </span>
                         <span class="life" id="player02-life"></span>
@@ -121,10 +123,8 @@
         </div>
         <h2 class="p-top-btm">Game History</h2>
         <div class="input-line">
-            <h3 id="player-name-updated"></h3>
             <label for="update-player-name">Change Player Name</label>
-            <input name="update-player-name" id="update-player-name" type="text"
-                placeholder="Type here to change player name">
+            <input name="update-player-name" id="update-player-name" type="text">
         </div>
         <div id="game-history" class="hide">
             <div id="game-history-list"></div>

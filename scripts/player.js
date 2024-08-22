@@ -112,6 +112,7 @@ class Player {
         this.currentLife = maxLife;
         this.currentCombo = maxCombo;
         this.attackMove = defaultAttack;
+        this.attackValue = initAttackValue;
     }
 
     resetPlayerStats() {

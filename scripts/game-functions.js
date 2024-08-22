@@ -239,9 +239,6 @@ function startPreRound() {
 
 // function to display the current round that is about to start and proceed to begin round
 function displayPreRoundInfo(countdown) {
-    if (isRoundEnded) {
-        return; // Exit if the game has ended
-    }
 
     $preRoundData.text(`${countdown}`);
     openPreRound();
@@ -253,9 +250,7 @@ function displayPreRoundInfo(countdown) {
         if (countdown <= preRoundCountEnd) {
             clearInterval(interval);
             closePreRound();
-            if (!isRoundEnded) {
-                beginRound();
-            }
+            beginRound();
         }
     }, preRoundInterval);
 
@@ -283,7 +278,6 @@ function endRound() {
 
     disableControls();
     countPlayerWin();
-    updatePlayersLife();
     saveGameState();
     if ((player01.roundsWon >= minRoundsToWIn || player02.roundsWon >= minRoundsToWIn) && currentRound >= initMaxRound) {
         endGame();
@@ -317,8 +311,6 @@ function displayRoundCountdown(countdown) {
         }
     }, roundInterval);
 }
-
-
 
 
 function displayCurrentRoundInfo() {
@@ -482,7 +474,7 @@ function endGame() {
     player01.resetPlayerStats();
     player02.resetPlayerStats();
     updatePlayersLife();
-    updatePlayerPosition();
+    updatePlayersPosition();
 }
 
 
@@ -678,9 +670,13 @@ function handleAttack(attackingPlayer, move, opponent) {
             case 'combo':
                 attackingPlayer.isBlocking = false;
                 if (attackingPlayer.currentCombo > minCombo) {
-                    opponent.currentLife -= 3;
+                    attackingPlayer.currentCombo--;
+                    opponent.currentLife -= comboHit;
                     attackingPlayer.attackValue = comboHit;
+                } else {
+                    attackingPlayer.attackValue = minCombo;
                 }
+                console.log(attackingPlayer.getId(), ' combo: ', attackingPlayer.currentCombo);
                 break;
         }
 
@@ -693,13 +689,13 @@ function handleAttack(attackingPlayer, move, opponent) {
                 'autoplay': true
             });
 
-            $player01Img.css('border', '2px solid green');
-            $player02Img.css('border', '2px solid red');
+            $player01Name.addClass('attacker');
+            $player02Name.addClass('attacked');
             $player01Hit.text(`x${attacker.attackValue}`);
             $player02Hit.css('display', 'block')
             setTimeout(() => {
-                $player01Img.css('border', 'none');
-                $player02Img.css('border', 'none');
+                $player01Name.removeClass('attacker');
+                $player02Name.removeClass('attacked');
                 $player01Hit.fadeOut();
             }, fadeOutInterval);
         }
@@ -710,12 +706,12 @@ function handleAttack(attackingPlayer, move, opponent) {
                 'autoplay': true
             });
 
-            $player02Img.css('border', '2px solid green');
-            $player01Img.css('border', '2px solid red');
+            $player02Name.addClass('attacker');
+            $player01Name.addClass('attacked');
             $player02Hit.text(`x${opponent.attackValue}`);
             setTimeout(() => {
-                $player02Img.css('border', 'none');
-                $player01Img.css('border', 'none');
+                $player02Name.removeClass('attacker');
+                $player01Name.removeClass('attacked');
                 $player02Hit.fadeOut();
             }, fadeOutInterval);
         }
@@ -965,3 +961,18 @@ function setGameInstructions() {
     $gameInstructions.html(instructions);
 }
 
+function updatePlayerName() {
+    $updatePlayerName.on('input', function () {
+        playerName = $(this).val();
+        player01.playerName = playerName;
+        console.log(`Player name updated to: ${player01.playerName} and ${playerName}`);
+        setGameInstructions();
+        displayPlayersName();
+    });
+
+}
+
+function displayPlayersName() {
+    $player01Name.text(player01.playerName);
+    $player02Name.text(player02.playerName);
+}

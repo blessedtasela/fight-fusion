@@ -34,6 +34,10 @@ $(window).resize(function () {
 
 setGameInstructions();
 
+$updatePlayerName.val(player01.playerName);
+updatePlayerName();
+displayPlayersName();
+
 $gameAudio[0].volume = 0.1; // Set volume to 30% of the maximum
 
 $showGameHistory.click(function () {

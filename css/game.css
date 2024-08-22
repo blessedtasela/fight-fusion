@@ -146,6 +146,19 @@ button:hover {
     background-color: white;
 }
 
+.player-name {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    place-content: center;
+    bottom: 10px;
+    position: relative;
+    width: 100px;
+    height: 10px;
+    margin: 10px;
+    top: 10px;
+}
+
 .start-end {
     position: relative;
     flex-direction: column;
@@ -493,11 +506,28 @@ button[disabled].move-btn {
     gap: 5px;
     align-items: center;
     justify-items: center;
+    margin: 5px;
 }
 
 
 input {
     border-radius: 8px;
+    padding: 8px;
+    min-width: 8px;
+}
+
+.attacked {
+    border: 2px solid;
+    background-color: red;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+.attacker {
+    border: 2px solid;
+    background-color: green;
+    border-radius: 8px;
+    padding: 5px;
 }
 
 /* Responsive styling */
@@ -567,7 +597,7 @@ input {
 
 @media screen and (max-width: 500px) {
     #game-history-list td {
-        padding-left: 40%;
+        padding-left: 50%;
     }
 
     #game-history-list td:before {
