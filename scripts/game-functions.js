@@ -922,7 +922,7 @@ function displayGameHistory() {
     <td data-label="Current Round">${game.currentRound}</td>
     <td data-label="Player Details">
         <ul>
-           <li>Position: Left: ${game.player.position.left}px. Top: ${game.player.position.top}px</li>
+           <li>Position: Left: ${game.player.position.left.toFixed(2)}px. Top: ${game.player.position.top.toFixed(2)}px</li>
             <li>Life: ${game.player.life}</li>
             <li>Combo: ${game.player.combo}</li>
             <li>Rounds Won: ${game.player.roundsWon}</li>
@@ -930,7 +930,7 @@ function displayGameHistory() {
     </td>
     <td data-label="Computer Details">
         <ul>
-            <li>Position: Left: ${game.computer.position.left}px. Top: ${game.computer.position.top}px</li>
+            <li>Position: Left: ${game.computer.position.left.toFixed(2)}px. Top: ${game.computer.position.top.toFixed(2)}px</li>
             <li>Life: ${game.computer.life}</li>
             <li>Combo: ${game.computer.combo}</li>
             <li>Rounds Won: ${game.computer.roundsWon}</li>
