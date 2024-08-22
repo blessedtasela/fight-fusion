@@ -203,7 +203,7 @@ function determineGameWinner() {
     } else if (currentRound >= maxRounds && player01.roundsWon !== player02.roundsWon) {
         return player01.roundsWon > player02.roundsWon ? player01.playerName : player02.playerName;
     } else {
-        return player02.playerName;
+        return nil;
     }
 }
 

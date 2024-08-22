@@ -134,6 +134,7 @@ const roundLose = 'lose this round!';
 const roundDraw = 'Round is a draw!';
 const gifPath = `./resources/gifs/`;
 const audioPath = `./resources/audios/`;
+const nil = 'NIL';
 
 const playerPosition = {
     top: 0,
