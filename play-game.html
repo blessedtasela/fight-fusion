@@ -19,14 +19,8 @@
 
     <script src="https://unpkg.com/feather-icons" defer></script>
 
-    <script src="https://unpkg.com/gifler/gifler.min.js" defer></script>
-
-    <!-- Include jQuery UI CSS -->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" defer>
-
-    <!-- Include jQuery and jQuery UI JS -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js" defer></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
+    <!-- jQuery is bundled locally so the game works even if a CDN is down -->
+    <script src="./scripts/jquery-3.7.0.min.js" defer></script>
 
     <script src="./scripts/var.js" defer></script>
     <script src="./scripts/nav.js" defer> </script>
@@ -34,9 +28,10 @@
     <script src="./scripts/game-var.js" defer></script>
     <script src="./scripts/game-functions.js" defer></script>
     <script src="./scripts/game.js" defer></script>
+</head>
 
 <body id="wrapper">
-    <audio id="game-audio" src="./resources/audios/" loop></audio>
+    <audio id="game-audio" loop></audio>
     <nav class="navbar" id="nav">
         <div class="flex-display">
             <span><i data-feather="square" class="txt-main"></i></span>
@@ -78,7 +73,7 @@
                         <div id="player01Hit" class="flex-display player-hit"></div>
                         <span class="life default-life"> </span>
                         <span class="life" id="player01-life"></span>
-                        <img class="player01 bounce " src="./resources/gifs/standing.gif">
+                        <img class="player01 bounce" src="./resources/gifs/standing.gif" alt="Your fighter">
                     </div>
                     <div id="player02">
                         <audio id="player02-audio"></audio>
@@ -86,17 +81,17 @@
                         <div id="player02Hit" class="flip-opposite flex-display player-hit"></div>
                         <span class="life default-life"> </span>
                         <span class="life" id="player02-life"></span>
-                        <img class="player02 bounce" src="./resources/gifs/standing.gif">
+                        <img class="player02 bounce" src="./resources/gifs/standing.gif" alt="Computer fighter">
                     </div>
                 </div>
             </div>
         </div>
         <div class="btns-control">
             <div class="controls">
-                <button id="btn-up" class="direction-btn">&#9650;</button>
-                <button id="btn-left" class="direction-btn">&#9668;</button>
-                <button id="btn-right" class="direction-btn">&#9658;</button>
-                <button id="btn-down" class="direction-btn">&#9660;</button>
+                <button id="btn-up" class="direction-btn" aria-label="Jump">&#9650;</button>
+                <button id="btn-left" class="direction-btn" aria-label="Move left">&#9668;</button>
+                <button id="btn-right" class="direction-btn" aria-label="Move right">&#9658;</button>
+                <button id="btn-down" class="direction-btn" aria-label="Crouch">&#9660;</button>
             </div>
             <div id="play" class="start-end p-top">
                 <button>Play</button>
@@ -124,22 +119,20 @@
         <h2 class="p-top-btm">Game History</h2>
         <div class="input-line">
             <label for="update-player-name">Change Player Name</label>
-            <input name="update-player-name" id="update-player-name" type="text">
+            <input name="update-player-name" id="update-player-name" type="text" maxlength="20">
         </div>
         <div id="game-history" class="hide">
             <div id="game-history-list"></div>
             <button id="delete-game">Delete All Games</button>
         </div>
     </div>
-    </div>
-
 
     <div id="round-result" class="popup">
         <div class="flex-display">
-            <img id="round-result-image" class="result-img">
+            <img id="round-result-image" class="result-img" alt="">
         </div>
-        <h2 id="end-game-header" class="flex-display">Round Result</h2>
-        <p id="round-result-details">Game details here</p>
+        <h2 id="round-result-header" class="flex-display">Round Result</h2>
+        <p id="round-result-details"></p>
         <div class="flex-display">
             <button id="next-round">Next Round</button>
             <button id="round-end-game">End Game</button>
@@ -149,15 +142,15 @@
 
     <div id="end-game" class="popup">
         <div class="flex-display">
-            <img id="end-game-image" class="end-result-img">
+            <img id="end-game-image" class="end-result-img" alt="">
         </div>
         <h2 id="end-game-header" class="flex-display">Game Over</h2>
-        <p id="end-game-details">Game details here</p>
+        <p id="end-game-details"></p>
         <div class="flex-display">
             <button id="end-game-new-game">New Game</button>
             <button id="cancel-end-game">Finish</button>
         </div>
-        <audio id="end-game-audio" src=""></audio>
+        <audio id="end-game-audio"></audio>
     </div>
 
     <div id="resume-game" class="popup">

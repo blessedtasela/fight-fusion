@@ -1,9 +1,10 @@
-
-// Call these functions on page load or when appropriate
+// Page setup for play-game.html
 feather.replace();
 displayGameHistory();
 checkForUnfinishedGame();
 updatePlayersPosition();
+
+// Popups. Handlers are wrapped so jQuery's click event is never passed as an argument.
 $deleteGame.click(openDeleteAllGames);
 $deleteDeleteAllGames.click(deleteAllSavedGames);
 $cancelDeleteAllGames.click(closeDeleteAllGames);
@@ -11,25 +12,24 @@ $closeDeleteGame.click(closeDeleteAllGames);
 $closeResumeGame.click(closeResumeGame);
 $closeStartGame.click(closeStartGame);
 $cancelStartGame.click(closeStartGame);
-$startNewGame.click(beginGame);
+$startNewGame.click(() => beginGame(true));
 $play.click(openStartGame);
 $exit.click(openExitGame);
 $continueResumeGame.click(continueGame);
-$startResumeNewGame.click(beginGame)
+$startResumeNewGame.click(() => beginGame(true));
 $closeExitGame.click(closeExitGame);
 $cancelExitGame.click(closeExitGame);
-$finishExitGame.click(endGame);
-$endGameNewGame.click(beginGame);
+$finishExitGame.click(() => endGame(false));
+$endGameNewGame.click(() => beginGame(true));
 $cancelEndGame.click(closeEndGame);
-$closeEndGame.click(closeEndGame);
-$closeRoundResult.click(closeRoundResult);
 $nextRound.click(startRound);
-$roundEndGame.click(endGame);
+$roundEndGame.click(() => endGame(false));
 
 updatePlayersLife();
 
+// Re-place the fighters when the window size changes, but never in the middle of a round.
 $(window).resize(function () {
-    updatePlayersPosition();
+    if (!roundActive) updatePlayersPosition();
 });
 
 setGameInstructions();
@@ -38,22 +38,21 @@ $updatePlayerName.val(player01.playerName);
 updatePlayerName();
 displayPlayersName();
 
-$gameAudio[0].volume = 0.1; // Set volume to 30% of the maximum
+$gameAudio[0].volume = 0.1;
 
 $showGameHistory.click(function () {
     $gameHistory.slideToggle(800);
     $hideGameHistory.toggleClass('toggle-game hide-game');
     $showGameHistory.toggleClass('hide-game');
-})
+});
 
 $hideGameHistory.click(function () {
     $gameHistory.slideToggle(800);
     $hideGameHistory.toggleClass('toggle-game hide-game');
     $showGameHistory.toggleClass('hide-game');
-})
+});
 
-
-// Player01 controls
+// On-screen controls. Keyboard controls are attached only while a round runs (enableControls).
 $btnUp.click(() => player01.move('up', player02));
 $btnDown.click(() => player01.move('down', player02));
 $btnLeft.click(() => player01.move('left', player02));
@@ -64,45 +63,4 @@ $btnKick.click(() => player01.attack('kick', player02));
 $btnBlock.click(() => player01.attack('block', player02));
 $btnCombo.click(() => player01.attack('combo', player02));
 
-// Keyboard controls for movement
-$(document).keydown(function (e) {
-    switch (e.which) {
-        case 37: // Left arrow key
-            player01.move('left', player02);
-            break;
-        case 38: // Up arrow key
-            player01.move('up', player02);
-            break;
-        case 39: // Right arrow key
-            player01.move('right', player02);
-            break;
-        case 40: // Down arrow key
-            player01.move('down', player02);
-            break;
-    }
-});
-
-// Keyboard controls for attack
-$(document).keydown(function (e) {
-    switch (e.which) {
-        case 49: // Key '1'
-        case 80: // 'p' key
-            player01.attack('punch', player02);
-            break;
-        case 50: // Key '2'
-        case 75: // 'k' key
-            player01.attack('kick', player02);
-            break;
-        case 51: // Key '3'
-        case 32: // Space key
-        case 66: // 'b' key
-            player01.attack('block', player02);
-            break;
-        case 52: // Key '4'
-        case 67: // 'c' key
-            player01.attack('combo', player02);
-            break;
-    }
-});
-
-disableControls(); 
+disableControls();

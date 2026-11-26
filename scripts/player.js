@@ -1,3 +1,8 @@
+// Debug logging: flip to true while developing. Kept off in production so the console stays clean.
+const DEBUG = false;
+function log(...args) {
+    if (DEBUG) console.log(...args);
+}
 
 class Player {
     constructor(elementId, position, controls, name, life = maxLife, combo = maxCombo) {
@@ -14,6 +19,7 @@ class Player {
         this.currentCombo = combo;
         this.playerName = name;
         this.isBlocking = false;
+        this.blockTimer = null;
         this.attackValue = initAttackValue;
         this.roundsWon = initRoundWon;
         this.attackMove = defaultAttack;
@@ -21,91 +27,54 @@ class Player {
         this.defaultTop = this.position.top;
     }
 
-
     move(direction, opponent) {
+        // Nobody moves between rounds, during countdowns or while a popup is open.
+        if (!roundActive) return;
+
         let newLeft = this.currentWidthOffset;
         let newTop = this.currentHeightOffset;
 
         const containerWidth = $playerArea.width();
-        const containerHeight = $playerArea.height();
         const moveAmount = 0.05 * containerWidth; // Move by 5% of container width
 
+        this.currentDirection = direction;
         switch (direction) {
-            case 'up':
-                this.currentDirection = direction;
-                newTop = Math.max(0, this.currentHeightOffset - moveAmount);
-                break;
-            case 'down':
-                this.currentDirection = direction;
-                break;
             case 'left':
-                this.currentDirection = direction;
                 newLeft = Math.max(0, this.currentWidthOffset - moveAmount);
                 break;
             case 'right':
-                this.currentDirection = direction;
                 newLeft = Math.min(containerWidth - this.width, this.currentWidthOffset + moveAmount);
                 break;
+            // 'up' and 'down' are jump and crouch animations: the fighter stays on the floor.
         }
 
-        // Update position and apply animation
         this.updatePosition(newLeft, newTop);
-        updatePlayerImage(this.$element.attr('id'), direction)
+        updatePlayerImage(this.getId(), direction);
     }
 
     updatePosition(left, top) {
         this.currentWidthOffset = left;
         this.currentHeightOffset = top;
-        this.$element.css({
-            left: left + 'px',
-            top: top + 'px',
-        });
-
-        // Update moveProperties
-        this.moveProperties.left = left + 'px';
-        this.$element.animate(this.moveProperties, duration, 'linear');
-
-        console.log(`Direction: ${this.currentDirection}`);
-        console.log(`Parent width: ${parentWidth}px`);
-        console.log(`Current Position: ${this.currentWidthOffset}px, ${this.currentHeightOffset}px`);
-        console.log(`Move Properties: ${JSON.stringify(this.moveProperties)}`);
+        this.moveProperties = { left: left + 'px' };
+        this.$element.stop(true).css({ top: top + 'px' }).animate(this.moveProperties, duration, 'linear');
+        log(`${this.getId()} moved ${this.currentDirection}: ${left}px, ${top}px`);
     }
 
-
-    // Attack the opponent
     attack(move, opponent) {
-        console.log('opponent: ', opponent)
         handleAttack(this, move, opponent);
-    }
-
-    resetPlayerPosition() {
-        this.moveProperties = {
-            left: this.defaultLeft + 'px',
-            top: this.defaultTop + 'px',
-        };
-
-        this.$element.css({
-            left: this.moveProperties.left,
-            top: this.moveProperties.top,
-        });
-
-        this.currentDirection = null;
     }
 
     getId() {
         return this.$element.attr('id');
     }
 
-    updateLife(newLife) {
-        this.currentLife = newLife;
-    }
-
-    updateCombo(newCombo) {
-        this.currentCombo = newCombo;
-    }
-
     updateRoundsWon() {
         this.roundsWon += 1;
+    }
+
+    clearBlock() {
+        clearTimeout(this.blockTimer);
+        this.isBlocking = false;
     }
 
     resetRoundStats() {
@@ -113,13 +82,11 @@ class Player {
         this.currentCombo = maxCombo;
         this.attackMove = defaultAttack;
         this.attackValue = initAttackValue;
+        this.clearBlock();
     }
 
     resetPlayerStats() {
-        this.currentLife = maxLife;
-        this.currentCombo = maxCombo;
+        this.resetRoundStats();
         this.roundsWon = initRoundWon;
-        this.attackValue = initAttackValue;
-        this.attackMove = defaultAttack;
     }
 }

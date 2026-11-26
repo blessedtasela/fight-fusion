@@ -615,3 +615,15 @@ input {
     }
 
 }
+/* Game controls: fast repeated taps must not zoom, select text or open the iOS callout menu. */
+.direction-btn,
+.move-btn,
+.start-end button,
+.player-area,
+.popup button {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}

@@ -453,3 +453,8 @@ button:hover {
   opacity: 0.8;
   color: #CB3F14;
 }
+/* iPhone: stop double-tap from zooming the page (pinch-to-zoom still works). */
+html,
+body {
+    touch-action: manipulation;
+}
