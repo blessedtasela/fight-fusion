@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Dropped glove">
+  <circle cx="60" cy="60" r="56" fill="#1d2230"/>
+  <ellipse cx="60" cy="94" rx="34" ry="5" fill="#000" opacity="0.35"/>
+  <g transform="rotate(-24 60 62)">
+    <path d="M38 44c0-10 8-16 18-16h10c12 0 20 8 20 20v12c0 12-8 20-20 20H52c-8 0-14-6-14-14z" fill="#CB3F14" stroke="#7a2508" stroke-width="2.5"/>
+    <path d="M38 52c-6 0-10 4-10 10s4 10 10 10" fill="#CB3F14" stroke="#7a2508" stroke-width="2.5"/>
+    <rect x="46" y="80" width="30" height="12" rx="3" fill="#f4f4f4" stroke="#9aa0aa" stroke-width="2"/>
+    <path d="M52 40c4-3 10-4 16-2" fill="none" stroke="#ff8a63" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <path d="M84 30c4 6 4 12 0 16M92 26c6 9 6 19 0 26" fill="none" stroke="#9aa0aa" stroke-width="3" stroke-linecap="round"/>
+</svg>

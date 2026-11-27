@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Fight Fusion">
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#CB3F14"/>
+  <path d="M36 8L18 36h12l-4 20 20-30H34z" fill="#fff8db" stroke="#1d2230" stroke-width="2.5" stroke-linejoin="round"/>
+</svg>

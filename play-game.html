@@ -16,6 +16,7 @@
 
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/game.css">
+    <link rel="stylesheet" href="./css/fighters.css">
 
     <script src="https://unpkg.com/feather-icons" defer></script>
 
@@ -34,7 +35,7 @@
     <audio id="game-audio" loop></audio>
     <nav class="navbar" id="nav">
         <div class="flex-display">
-            <span><i data-feather="square" class="txt-main"></i></span>
+            <img class="logo-mark" src="./resources/art/logo.svg" alt="">
             <span>Fight Fusion</span>
         </div>
         <div class="menu-lg">
@@ -67,21 +68,23 @@
         <div class="game-box-area ">
             <div class="player-area">
                 <div class="player" id="players">
-                    <div id="player01">
+                    <div id="player01" class="fighter" data-arms="guard" data-legs="stand" role="img" aria-label="Your fighter">
                         <audio id="player01-audio"></audio>
-                        <div class="player-name" id="player01-name"> </div>
-                        <div id="player01Hit" class="flex-display player-hit"></div>
-                        <span class="life default-life"> </span>
-                        <span class="life" id="player01-life"></span>
-                        <img class="player01 bounce" src="./resources/gifs/standing.gif" alt="Your fighter">
+                        <div class="fighter-hud">
+                            <div class="player-name" id="player01-name"></div>
+                            <div class="life-track"><span class="life" id="player01-life"></span></div>
+                        </div>
+                        <div id="player01Hit" class="player-hit"></div>
+                        <div class="fighter-art"></div>
                     </div>
-                    <div id="player02">
+                    <div id="player02" class="fighter" data-arms="guard" data-legs="stand" role="img" aria-label="Computer fighter">
                         <audio id="player02-audio"></audio>
-                        <div class="player-names flip-opposite" id="player02-name"> </div>
-                        <div id="player02Hit" class="flip-opposite flex-display player-hit"></div>
-                        <span class="life default-life"> </span>
-                        <span class="life" id="player02-life"></span>
-                        <img class="player02 bounce" src="./resources/gifs/standing.gif" alt="Computer fighter">
+                        <div class="fighter-hud">
+                            <div class="player-names" id="player02-name"></div>
+                            <div class="life-track"><span class="life" id="player02-life"></span></div>
+                        </div>
+                        <div id="player02Hit" class="player-hit"></div>
+                        <div class="fighter-art"></div>
                     </div>
                 </div>
             </div>
@@ -98,6 +101,10 @@
             </div>
             <div id="exit" class="start-end p-top hide">
                 <button>Exit</button>
+                <div class="game-toggles">
+                    <button id="pause-btn" type="button" disabled>Pause</button>
+                    <button id="sound-btn" type="button" aria-pressed="true">Sound on</button>
+                </div>
             </div>
             <div class="moves">
                 <button id="btn-punch" class="move-btn">punch</button>
@@ -167,6 +174,12 @@
         <span id="close-start-game" class="close-popup">&times;</span>
         <H2>Please read the instructions carefully</H2>
         <div class="success" id="game-instructions"> </div>
+        <fieldset class="difficulty" id="difficulty">
+            <legend>Difficulty</legend>
+            <label><input type="radio" name="difficulty" value="easy"><span>Easy</span></label>
+            <label><input type="radio" name="difficulty" value="normal" checked><span>Normal</span></label>
+            <label><input type="radio" name="difficulty" value="hard"><span>Hard</span></label>
+        </fieldset>
         <div class="flex-display">
             <button id="start-new-game">Play</button>
             <button id="cancel-start-game">Cancel</button>
@@ -176,7 +189,7 @@
     <div id="delete-all-games" class="popup">
         <span id="close-delete-game" class="close-popup">&times;</span>
         <H2>Are you sure you want to delete all games?</H2>
-        <span class="failure">All saved game data would be lost!!!!</span>
+        <span class="failure">All saved game history will be deleted.</span>
         <div class="flex-display">
             <button id="delete-delete-all-games">Delete</button>
             <button id="cancel-delete-all-games">Cancel</button>
@@ -186,12 +199,88 @@
     <div id="exit-game" class="popup">
         <span id="close-exit-game" class="close-popup">&times;</span>
         <H2>Are you sure you want to end the game?</H2>
-        <span class="failure">All current progress would be lost!!!!</span>
+        <span class="failure">Your progress in this game will be lost.</span>
         <div class="flex-display">
             <button id="finish-exit-game">Finish</button>
             <button id="cancel-exit-game">Cancel</button>
         </div>
     </div>
+
+
+    <!-- Original fighter artwork (drawn for Fight Fusion). Poses are switched with data-arms / data-legs. -->
+    <template id="fighter-template">
+        <svg class="fighter-svg" viewBox="0 0 120 160" aria-hidden="true">
+            <ellipse class="shadow" cx="56" cy="156" rx="32" ry="4" />
+            <g class="body">
+                <!-- legs -->
+                <g class="l-stand">
+                    <path class="limb s-pants" d="M50 86 L42 118 L38 148" />
+                    <path class="limb s-pants" d="M62 86 L72 118 L76 148" />
+                    <path class="foot" d="M32 151 H46" />
+                    <path class="foot" d="M72 151 H86" />
+                </g>
+                <g class="l-kick">
+                    <path class="limb s-pants" d="M50 86 L42 118 L38 148" />
+                    <path class="foot" d="M32 151 H46" />
+                    <path class="limb s-pants" d="M62 86 L88 88 L112 76" />
+                    <path class="foot" d="M114 68 V84" />
+                </g>
+                <g class="l-tuck">
+                    <path class="limb s-pants" d="M50 86 L38 104 L52 120" />
+                    <path class="limb s-pants" d="M62 86 L76 102 L88 116" />
+                    <path class="foot" d="M48 124 H60" />
+                    <path class="foot" d="M86 120 H98" />
+                </g>
+                <!-- back arm (behind the body) -->
+                <g class="a-guard a-punch">
+                    <path class="limb s-gi" d="M50 44 L44 60" />
+                    <path class="limb s-skin" d="M44 60 L68 40" />
+                    <circle class="f-glove" cx="72" cy="36" r="7.5" />
+                </g>
+                <g class="a-block">
+                    <path class="limb s-gi" d="M50 44 L52 62" />
+                    <path class="limb s-skin" d="M52 62 L66 32" />
+                    <circle class="f-glove" cx="68" cy="27" r="7.5" />
+                </g>
+                <g class="a-combo">
+                    <path class="limb s-gi" d="M50 46 L72 54" />
+                    <path class="limb s-skin" d="M72 54 L96 58" />
+                    <circle class="f-glove" cx="102" cy="58" r="8" />
+                </g>
+                <!-- body and head -->
+                <path class="f-gi" d="M43 38 Q56 31 69 38 L66 86 Q56 91 46 86 Z" />
+                <path d="M56 36 L52 56 M56 36 L62 56" stroke="rgba(0,0,0,0.25)" stroke-width="2" fill="none" />
+                <rect class="belt" x="44" y="78" width="24" height="6" rx="2" />
+                <path class="band" d="M63 84 L67 96" />
+                <rect class="f-skin" x="52" y="30" width="9" height="8" rx="3" />
+                <circle class="f-skin" cx="57" cy="21" r="11.5" />
+                <path class="band" d="M46 16 H68" />
+                <path class="band" d="M46 16 L36 20 M46 17 L38 26" />
+                <circle class="eye" cx="63.5" cy="21" r="1.7" />
+                <!-- front arm (in front of the body) -->
+                <g class="a-guard">
+                    <path class="limb s-gi" d="M64 44 L72 62" />
+                    <path class="limb s-skin" d="M72 62 L80 46" />
+                    <circle class="f-glove" cx="82" cy="42" r="8" />
+                </g>
+                <g class="a-punch">
+                    <path class="limb s-gi" d="M64 44 L86 44" />
+                    <path class="limb s-skin" d="M86 44 L104 43" />
+                    <circle class="f-glove" cx="110" cy="43" r="8.5" />
+                </g>
+                <g class="a-block">
+                    <path class="limb s-gi" d="M64 44 L74 60" />
+                    <path class="limb s-skin" d="M74 60 L78 30" />
+                    <circle class="f-glove" cx="79" cy="25" r="8" />
+                </g>
+                <g class="a-combo">
+                    <path class="limb s-gi" d="M64 42 L88 38" />
+                    <path class="limb s-skin" d="M88 38 L106 32" />
+                    <circle class="f-glove" cx="112" cy="31" r="8.5" />
+                </g>
+            </g>
+        </svg>
+    </template>
 
     <div id="count-down" class="count-down-popup">
         <div class="flex-display" id="round-count-down">

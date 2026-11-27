@@ -30,13 +30,10 @@ const $menuContents = $('#menu-contents');
 const $navItems = $('#nav-items');
 const $scrollToTop = $('#scroll-to-top');
 
+// Carousel slides: screenshots of Fight Fusion itself (original artwork).
 const heroes = [
-    { id: 1, title: "Inspire and Transform Your Body with", image: "./resources/images/ff01.jpg" },
-    { id: 2, title: "Explore and Discover New Levels with ", image: "./resources/images/ff02.jpg" },
-    { id: 3, title: "Unleash Your Potentials with ", image: "./resources/images/ff03.jpg" },
-    { id: 4, title: "Fuel Your Body, Transform Your Life with ", image: "./resources/images/ff04.jpg" },
-    { id: 5, title: "Unleash Your Potentials with ", image: "./resources/images/ff05.jpg" },
-    { id: 6, title: "Fuel Your Body, Transform Your Life with ", image: "./resources/images/ff06.jpg" }
+    { id: 1, title: "Land a punch: get in range, then strike.", image: "./resources/screens/ff-punch.webp", alt: "Fight Fusion: the orange fighter punches, the blue fighter loses 1 life" },
+    { id: 2, title: "Jump to clear a kick, crouch to duck a punch.", image: "./resources/screens/ff-kick.webp", alt: "Fight Fusion: the orange fighter jumps over a kick from the blue fighter" },
+    { id: 3, title: "Save your combos: 3 damage, 15 per round.", image: "./resources/screens/ff-combo.webp", alt: "Fight Fusion: the orange fighter lands a combo for 3 damage" }
 ];
 
-const img = heroes[currentImgIdx].image;

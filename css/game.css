@@ -83,24 +83,7 @@ button:hover {
     overflow: hidden;
 }
 
-.player-area {
-    width: calc(100% - 4%);
-    position: relative;
-    margin: 2% auto;
-    background-color: black;
-}
 
-.player {
-    position: absolute;
-    width: 50%;
-    left: 5%;
-    top: 50%;
-}
-
-.player img {
-    width: 100%;
-    position: relative;
-}
 
 .result-img {
     width: 50%;
@@ -110,23 +93,9 @@ button:hover {
     width: 30%;
 }
 
-.player-hit {
-    display: flex;
-    margin-bottom: 30%;
-}
 
 
-#player01,
-#player02 {
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    margin: -5% -10%;
-}
 
-#player02 {
-    transform: scaleX(-1) !important;
-}
 
 .life {
     text-align: center;

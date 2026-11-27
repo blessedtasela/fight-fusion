@@ -37,6 +37,7 @@ function escapeHtml(value) {
 
 // Restart a sound from the beginning, even if the same file just played.
 function playSound($audio, name) {
+    if (!soundOn) return;
     const el = $audio[0];
     if (!el) return;
     el.src = `${audioPath}${name}.mp3`;
@@ -56,7 +57,7 @@ function hidePopup($popup) {
 // ── Popups ──────────────────────────────────────────────────────────────────
 
 function openExitGame() {
-    pauseRound();
+    pauseRound('exit');
     showPopup($exitGame);
     $main.addClass('overlay disabled');
     $gameData.addClass('disabled');
@@ -66,7 +67,7 @@ function closeExitGame() {
     hidePopup($exitGame);
     $main.removeClass('overlay disabled');
     $gameData.removeClass('disabled');
-    resumeRound();
+    resumeRound('exit');
 }
 
 function openResumeGame() {
@@ -216,6 +217,7 @@ function beginRound() {
     roundActive = true;
     roundPaused = false;
     roundRemaining = roundDuration;
+    $pauseBtn.prop('disabled', false).text('Pause');
     enableControls();
     $roundCountDown.text('START!!!');
     playSound($roundStartAudio, 'start');
@@ -235,17 +237,23 @@ function runRoundClock() {
 }
 
 // The Exit confirmation freezes the round so nobody gets hit while deciding.
-function pauseRound() {
+let pauseReason = null; // 'button' or 'exit': only what paused the round may resume it
+
+function pauseRound(reason = 'exit') {
     if (!roundActive || roundPaused) return;
+    pauseReason = reason;
     roundPaused = true;
+    $pauseBtn.text('Resume');
     roundActive = false;
     clearInterval(roundIntervalId);
     disableControls();
 }
 
-function resumeRound() {
-    if (!roundPaused || !gameStarted) return;
+function resumeRound(reason = 'exit') {
+    if (!roundPaused || !gameStarted || reason !== pauseReason) return;
+    pauseReason = null;
     roundPaused = false;
+    $pauseBtn.text('Pause');
     roundActive = true;
     enableControls();
     runRoundClock();
@@ -262,6 +270,7 @@ function endRound() {
     isRoundEnded = true;
     clearInterval(roundIntervalId);
     disableControls();
+    $pauseBtn.prop('disabled', true).text('Pause');
     closeRoundCountdown();
     countPlayerWin();
 
@@ -300,21 +309,21 @@ function showRoundResult() {
     let text, image, sound;
     if (player01.currentLife > player02.currentLife) {
         text = `${player01.playerName} ${roundWin}`;
-        image = 'round-win';
+        image = 'win';
         sound = 'round-win';
     } else if (player02.currentLife > player01.currentLife) {
         text = `${player02.playerName} ${roundWin}`;
-        image = 'round-lose';
+        image = 'lose';
         sound = 'round-lose';
     } else {
         text = roundDraw;
-        image = 'round-draw';
+        image = 'draw';
         sound = 'round-draw';
     }
 
     $roundResultHeader.text(`Round ${currentRound}`);
     $roundResultDetails.text(`${text} Rounds won: ${player01.playerName} ${player01.roundsWon}, ${player02.playerName} ${player02.roundsWon}.`);
-    $roundResultImage.attr({ src: `${gifPath}${image}.gif`, alt: text });
+    $roundResultImage.attr({ src: `${artPath}${image}.svg`, alt: text });
     playSound($roundResultAudio, sound);
     showPopup($roundResult);
     $main.addClass('overlay disabled');
@@ -332,6 +341,8 @@ function endGame(finished) {
     disableControls();
     roundActive = false;
     roundPaused = false;
+    pauseReason = null;
+    $pauseBtn.prop('disabled', true).text('Pause');
     isRoundEnded = true;
     isGameEnded = true;
     gameStarted = false;
@@ -365,7 +376,7 @@ function endGame(finished) {
     closeRoundResult();
     $endGameHeader.text(title);
     $endGameDetails.text(details).removeClass('success failure draw').addClass(resultClass);
-    $endGameImage.attr({ src: `${gifPath}${resultClass}.gif`, alt: title });
+    $endGameImage.attr({ src: `${artPath}${{ success: 'win', failure: 'lose', draw: 'draw' }[resultClass]}.svg`, alt: title });
     playSound($endGameAudio, resultClass);
     showPopup($endGame);
     $main.addClass('overlay disabled');
@@ -411,7 +422,7 @@ function enableControls() {
     $controls.attr('disabled', false);
     $(document).off('keydown.fightfusion').on('keydown.fightfusion', onGameKey);
     clearInterval(player02IntervalId);
-    player02IntervalId = setInterval(player02Controls, player02Interval);
+    player02IntervalId = setInterval(player02Controls, difficulties[difficulty].interval);
 }
 
 // The computer closes the distance, then fights; it no longer wanders at random.
@@ -425,11 +436,16 @@ function player02Controls() {
         return;
     }
 
+    const { blockChance } = difficulties[difficulty];
     const roll = Math.random();
+    if (roll < 0.06) {
+        player02.move(Math.random() < 0.5 ? 'up' : 'down', player01); // sometimes dodges
+        return;
+    }
     let move = 'punch';
-    if (roll < 0.25) move = 'block';
-    else if (roll < 0.55) move = 'kick';
-    else if (roll < 0.65 && player02.currentCombo > minCombo) move = 'combo';
+    if (roll < 0.06 + blockChance) move = 'block';
+    else if (roll < 0.06 + blockChance + 0.3) move = 'kick';
+    else if (roll < 0.06 + blockChance + 0.4 && player02.currentCombo > minCombo) move = 'combo';
     player02.attack(move, player01);
 }
 
@@ -440,11 +456,11 @@ function handleAttack(attackingPlayer, move, opponent) {
 
     const isPlayer01 = attackingPlayer === player01;
     const $attackerAudio = isPlayer01 ? $player01Audio : $player02Audio;
-    const $attackerHit = isPlayer01 ? $player01Hit : $player02Hit;
+    const $defenderHit = isPlayer01 ? $player02Hit : $player01Hit;
     const $attackerName = isPlayer01 ? $player01Name : $player02Name;
     const $defenderName = isPlayer01 ? $player02Name : $player01Name;
 
-    updatePlayerImage(attackingPlayer.getId(), move);
+    setPose(attackingPlayer, move);
 
     // Block: no damage, protects against the next hit for a short window.
     if (move === 'block') {
@@ -458,6 +474,7 @@ function handleAttack(attackingPlayer, move, opponent) {
 
     attackingPlayer.clearBlock(); // attacking drops your guard
 
+    if (move === 'combo' && attackingPlayer.currentCombo <= minCombo) return; // no combos left
     if (!isColliding(attackingPlayer, opponent)) {
         log(`${attackingPlayer.getId()} ${move} missed`);
         return;
@@ -465,49 +482,68 @@ function handleAttack(attackingPlayer, move, opponent) {
 
     let damage = singleHit;
     if (move === 'combo') {
-        if (attackingPlayer.currentCombo <= minCombo) return; // no combos left: nothing happens
         attackingPlayer.currentCombo--;
         damage = comboHit;
     }
 
-    const blocked = opponent.isBlocking;
-    if (blocked) damage = 0;
+    // Crouching ducks high attacks (punch, combo); jumping clears kicks.
+    const dodged = (opponent.evade === 'crouch' && (move === 'punch' || move === 'combo')) ||
+        (opponent.evade === 'jump' && move === 'kick');
+    const blocked = !dodged && opponent.isBlocking;
+    if (dodged || blocked) damage = 0;
 
     opponent.currentLife = Math.max(minLife, opponent.currentLife - damage);
     attackingPlayer.attackValue = damage;
     updatePlayersLife();
-    playSound($attackerAudio, blocked ? 'block' : move);
+    playSound($attackerAudio, damage ? move : 'block');
+    showHit($defenderHit, dodged ? 'Dodged' : blocked ? 'Blocked' : `-${damage}`, damage === 0);
 
-    $attackerHit.stop(true, true).text(blocked ? 'blocked' : `x${damage}`).show().fadeOut(fadeOutInterval);
+    if (damage) {
+        opponent.$element.removeClass('is-hit');
+        void opponent.$element[0].offsetWidth; // restart the hit flash
+        opponent.$element.addClass('is-hit');
+        setTimeout(() => opponent.$element.removeClass('is-hit'), 300);
+    }
+
     $attackerName.addClass('attacker');
     $defenderName.addClass('attacked');
     setTimeout(() => {
         $attackerName.removeClass('attacker');
         $defenderName.removeClass('attacked');
-    }, fadeOutInterval);
+    }, 600);
 
     if (opponent.currentLife <= minLife) {
         endRound();
     }
 }
 
-function updatePlayerImage(playerId, move) {
-    const $playerImg = $(`#${playerId}`).find('img');
-    $playerImg.attr('src', `${gifPath}${move}.gif`);
-    clearTimeout($playerImg.data('resetTimer'));
-    $playerImg.data('resetTimer', setTimeout(() => {
-        $playerImg.attr('src', `${gifPath}standing.gif`);
-    }, 1000));
+function showHit($el, text, soft) {
+    $el.stop(true, true).toggleClass('is-blocked', soft).text(text).show().fadeOut(fadeOutInterval);
 }
 
-// Two fighters can hit each other when the gap between their boxes is within reach.
+// Switch the fighter drawing to a pose, then back to the guard stance.
+function setPose(player, pose) {
+    const arms = { punch: 'punch', block: 'block', combo: 'combo' }[pose] || 'guard';
+    const legs = pose === 'kick' ? 'kick' : pose === 'up' ? 'tuck' : 'stand';
+    player.$element.attr({ 'data-arms': arms, 'data-legs': legs });
+    clearTimeout(player.poseTimer);
+    if (pose !== 'stand') {
+        player.poseTimer = setTimeout(() => {
+            player.$element.attr({ 'data-arms': 'guard', 'data-legs': 'stand' });
+        }, pose === 'block' ? blockWindow : 380);
+    }
+}
+
+// Closest the two fighters' positions may get: their bodies touch, never overlap.
+function closestDistance(a, b) {
+    return 0.5 * (a.width + b.width) / 2;
+}
+
+// In range when a punch or kick drawn from one fighter reaches the other's body.
 function isColliding(player1, player2) {
-    const p1Left = player1.currentWidthOffset;
-    const p1Right = p1Left + player1.width;
-    const p2Left = player2.currentWidthOffset;
-    const p2Right = p2Left + player2.width;
-    const gap = Math.max(p2Left - p1Right, p1Left - p2Right, 0);
-    isCollision = gap <= attackRange;
+    const distance = Math.abs(player1.currentWidthOffset - player2.currentWidthOffset);
+    const reach = 0.95 * (player1.width + player2.width) / 2;
+    isCollision = distance <= reach;
     return isCollision;
 }
 
@@ -538,13 +574,14 @@ function updatePlayersPosition() {
     const containerWidth = $playerArea.width();
     player01.width = player01.$element.outerWidth();
     player02.width = player02.$element.outerWidth();
-    player01.updatePosition(0, 0);
-    player02.updatePosition(Math.max(0, containerWidth - player02.width), 0);
+    player01.updatePosition(0);
+    player02.updatePosition(Math.max(0, containerWidth - player02.width));
 }
 
 // ── Audio ───────────────────────────────────────────────────────────────────
 
 function startGameAudio() {
+    if (!soundOn) return;
     const el = $gameAudio[0];
     if (!el.src.endsWith('game-play.mp3')) el.src = `${audioPath}game-play.mp3`;
     el.loop = true;
@@ -718,10 +755,11 @@ function setGameInstructions() {
             <li>Each round lasts ${roundDuration} seconds. Win ${minRoundsToWIn} rounds to win the match.</li>
             <li>Win a round by knocking out ${them}, or by having more life when time runs out.</li>
             <li>If the rounds are tied after ${initMaxRound}, extra rounds are played, up to ${maxRoundsCap} in total.</li>
-            <li>Move: arrow keys or the on-screen arrows. Get close to ${them} to land a hit.</li>
+            <li>Move: left and right arrow keys, or hold the on-screen arrows. Get close to ${them} to land a hit.</li>
             <li>Punch: P or 1. Kick: K or 2. Combo: C or 4 (3 damage, ${maxCombo} per round).</li>
             <li>Block: B, 3 or Space. It stops the next hit for a moment, but attacking drops your guard.</li>
-            <li>${you}, you can change your name and see past games in Game History below.</li>
+            <li>Jump (up arrow) clears kicks. Crouch (down arrow) ducks punches and combos.</li>
+            <li>Pause any time with the Pause button. ${you}, you can change your name below.</li>
         </ul>
     `);
 }
@@ -738,4 +776,29 @@ function updatePlayerName() {
 function displayPlayersName() {
     $player01Name.text(player01.playerName);
     $player02Name.text(player02.playerName);
+}
+
+// ── Pause and sound buttons ─────────────────────────────────────────────────
+
+function togglePause() {
+    if (roundPaused) {
+        resumeRound('button');
+    } else {
+        pauseRound('button');
+    }
+}
+
+function renderSoundButton() {
+    $soundBtn.text(soundOn ? 'Sound on' : 'Sound off').attr('aria-pressed', String(soundOn));
+}
+
+function toggleSound() {
+    soundOn = !soundOn;
+    localStorage.setItem('ff-sound', soundOn ? 'on' : 'off');
+    renderSoundButton();
+    if (!soundOn) {
+        $gameAudio[0].pause();
+    } else if (gameStarted) {
+        startGameAudio();
+    }
 }

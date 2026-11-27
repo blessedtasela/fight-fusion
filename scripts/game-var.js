@@ -74,6 +74,8 @@ const $gameInstructions = $('#game-instructions');
 const $updatePlayerName = $('#update-player-name');
 const $player01Name = $('#player01-name');
 const $player02Name = $('#player02-name');
+const $pauseBtn = $('#pause-btn');
+const $soundBtn = $('#sound-btn');
 
 let player02IntervalId;
 let roundIntervalId;
@@ -104,8 +106,8 @@ const initRoundWon = 0;
 const initAttackValue = 0;
 const countdownEnd = 0;
 const preRoundCountEnd = 0;
-const currentRoundTimeout = 2000;
-const preRoundInterval = 1000;
+const currentRoundTimeout = 1200; // 'Round N' banner
+const preRoundInterval = 700;     // 3-2-1 ticks
 const roundInterval = 1000;
 const preRoundTimeout = 3000;
 const initMaxRound = 3;
@@ -125,7 +127,17 @@ const attackRange = 30;       // px of reach: fighters this close can hit each o
 const duration = 500;
 const playerWidthOffset = 50;
 const playerHeightOffset = 100;
-const player02Interval = 500;
+// Computer opponent: how often it acts, and how often it blocks when in range.
+const difficulties = {
+    easy: { interval: 900, blockChance: 0.12 },
+    normal: { interval: 550, blockChance: 0.25 },
+    hard: { interval: 350, blockChance: 0.35 },
+};
+let difficulty = difficulties[localStorage.getItem('ff-difficulty')] ? localStorage.getItem('ff-difficulty') : 'normal';
+let soundOn = localStorage.getItem('ff-sound') !== 'off';
+const moveStep = 0.03;        // fraction of the arena width per step
+const moveThrottle = 70;      // ms between steps when a key or button is held
+const evadeDuration = 450;    // ms a jump or crouch lasts
 const openStartGameTimeout = 3000;
 const fadeOutInterval = 2000;
 const roundDuration = 60;
@@ -140,7 +152,7 @@ const defaultAttack = 'still';
 const roundWin = 'wins this round!';
 const roundLose = 'lose this round!';
 const roundDraw = 'Round is a draw!';
-const gifPath = `./resources/gifs/`;
+const artPath = `./resources/art/`;
 const audioPath = `./resources/audios/`;
 const nil = 'NIL';
 

@@ -1,0 +1,459 @@
+/* ── Arena ─────────────────────────────────────────────────────────────────
+   One coordinate system: #players covers the whole arena, fighters are
+   positioned by `left` only (set from JS) and stand on the floor. */
+
+.game-box-area {
+    background: #07080c;
+    border: 0;
+    border-radius: 14px;
+}
+
+.player-area {
+    position: relative;
+    width: 96%;
+    margin: 2% auto;
+    align-self: stretch;
+    border-radius: 12px;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 50% 30%, rgba(203, 63, 20, 0.28), transparent 60%),
+        linear-gradient(#141a2b, #0a0d16 72%);
+}
+
+/* Ring ropes on the back wall */
+.player-area::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 34%;
+    height: 30%;
+    background: repeating-linear-gradient(to bottom,
+            rgba(255, 255, 255, 0.16) 0 3px,
+            transparent 3px 33%);
+    pointer-events: none;
+}
+
+/* Floor */
+.player-area::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 16%;
+    background:
+        linear-gradient(rgba(245, 183, 0, 0.7), rgba(245, 183, 0, 0.7)) top / 100% 3px no-repeat,
+        linear-gradient(#3a2418, #1a110c);
+    pointer-events: none;
+}
+
+.player {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+/* ── Fighters ──────────────────────────────────────────────────────────── */
+
+.fighter {
+    --fw: clamp(84px, 11vw, 150px);
+    position: absolute;
+    bottom: 12%;
+    left: 0;
+    width: var(--fw);
+    margin: 0;
+    transition: left 0.12s linear;
+}
+
+#player01 {
+    --gi: #CB3F14;
+    --gi-dark: #8f2a0c;
+    --pants: #f3e9dc;
+    --glove: #f4f4f4;
+    --band: #f5b700;
+    --skin: #8a5a3b;
+}
+
+#player02 {
+    --gi: #2563eb;
+    --gi-dark: #173f99;
+    --pants: #cbd5e1;
+    --glove: #111827;
+    --band: #dc2626;
+    --skin: #8a5a3b;
+}
+
+.fighter-art {
+    width: 100%;
+}
+
+/* The computer faces left: flip only the drawing, never its name or life bar. */
+#player02 .fighter-art {
+    transform: scaleX(-1);
+}
+
+.fighter-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    transform-origin: 50% 100%;
+}
+
+.fighter-svg .limb {
+    fill: none;
+    stroke-width: 9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.fighter-svg .s-skin { stroke: var(--skin); }
+.fighter-svg .s-pants { stroke: var(--pants); }
+.fighter-svg .s-gi { stroke: var(--gi); }
+.fighter-svg .f-skin { fill: var(--skin); }
+.fighter-svg .f-gi { fill: var(--gi); stroke: var(--gi-dark); stroke-width: 2; }
+.fighter-svg .f-glove { fill: var(--glove); stroke: rgba(0, 0, 0, 0.35); stroke-width: 1.5; }
+.fighter-svg .band { stroke: var(--band); stroke-width: 4; stroke-linecap: round; fill: none; }
+.fighter-svg .belt { fill: var(--band); }
+.fighter-svg .foot { stroke: #0b0d12; stroke-width: 7; stroke-linecap: round; }
+.fighter-svg .eye { fill: #0b0d12; }
+.fighter-svg .shadow { fill: #000; opacity: 0.45; }
+
+/* Pose variants: arms and legs are swapped by data attributes set from JS. */
+.fighter-svg .a-punch,
+.fighter-svg .a-block,
+.fighter-svg .a-combo,
+.fighter-svg .l-kick,
+.fighter-svg .l-tuck {
+    display: none;
+}
+
+.fighter[data-arms="punch"] .a-guard,
+.fighter[data-arms="block"] .a-guard,
+.fighter[data-arms="combo"] .a-guard,
+.fighter[data-legs="kick"] .l-stand,
+.fighter[data-legs="tuck"] .l-stand {
+    display: none;
+}
+
+.fighter[data-arms="guard"] .a-guard,
+.fighter[data-arms="punch"] .a-punch,
+.fighter[data-arms="block"] .a-block,
+.fighter[data-arms="combo"] .a-combo,
+.fighter[data-legs="kick"] .l-kick,
+.fighter[data-legs="tuck"] .l-tuck {
+    display: inline;
+}
+
+/* Idle: a slow fighting-stance bounce */
+.fighter-svg .body {
+    animation: stance 1.6s ease-in-out infinite;
+}
+
+@keyframes stance {
+    50% { transform: translateY(2px); }
+}
+
+.fighter.is-jumping .fighter-svg {
+    animation: jump 0.5s ease-out;
+}
+
+@keyframes jump {
+    45% { transform: translateY(-55%); }
+}
+
+.fighter.is-crouching .fighter-svg {
+    transform: scaleY(0.78);
+    transition: transform 0.08s;
+}
+
+.fighter.is-hit .fighter-svg {
+    animation: hit 0.3s;
+}
+
+@keyframes hit {
+    30% { transform: translateX(-6%); filter: brightness(1.8) saturate(0.4); }
+    60% { transform: translateX(4%); }
+}
+
+/* ── HUD above each fighter ────────────────────────────────────────────── */
+
+.hud-bar {
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    right: 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.fighter-hud {
+    width: min(40%, 340px);
+}
+
+.fighter-hud.hud-right {
+    text-align: right;
+}
+
+.fighter-hud.hud-right .life-track {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.fighter-hud .player-name,
+.fighter-hud .player-names {
+    position: static;
+    display: block;
+    width: auto;
+    height: auto;
+    margin: 0 0 4px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: 0;
+    padding: 0;
+    background: none;
+    transition: color 0.2s;
+}
+
+.fighter-hud .player-names.attacker,
+.fighter-hud .player-name.attacker {
+    color: #f5b700;
+    background: none;
+    border: 0;
+    padding: 0;
+}
+
+.fighter-hud .player-names.attacked,
+.fighter-hud .player-name.attacked {
+    color: #ff6b6b;
+    background: none;
+    border: 0;
+    padding: 0;
+}
+
+.life-track {
+    height: 12px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.22);
+    overflow: hidden;
+}
+
+.life-track .life {
+    position: static;
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border-radius: 4px;
+    background-color: green;
+    transition: width 0.2s, background-color 0.2s;
+}
+
+/* Damage pops up over the fighter who took it */
+.fighter .player-hit {
+    position: absolute;
+    top: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    display: none;
+    color: #ff6b6b;
+    font-weight: 900;
+    font-size: 20px;
+    text-shadow: 0 2px 0 #000;
+    pointer-events: none;
+    z-index: 2;
+    white-space: nowrap;
+}
+
+.fighter .player-hit.is-blocked {
+    color: #9ad1ff;
+    font-size: 15px;
+}
+
+/* ── Logo ──────────────────────────────────────────────────────────────── */
+
+.logo-mark {
+    width: 26px;
+    height: 26px;
+    display: block;
+}
+
+/* ── Extra controls: pause, sound, difficulty ──────────────────────────── */
+
+.game-toggles {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+}
+
+.game-toggles button {
+    margin: 4px;
+    padding: 0.35rem 0.8rem;
+    font-size: 13px;
+}
+
+.game-toggles button[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.difficulty {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin: 12px 0 4px;
+    font-weight: bold;
+}
+
+.difficulty label {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    font-weight: normal;
+    padding: 4px 10px;
+    border: 2px solid #1d2230;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.difficulty input:checked+span {
+    font-weight: bold;
+    color: #CB3F14;
+}
+
+.result-img,
+.end-result-img {
+    width: 120px;
+    height: 120px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fighter,
+    .fighter-svg .body,
+    .fighter.is-jumping .fighter-svg,
+    .fighter.is-hit .fighter-svg {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* Popups dim the arena; they must not collapse it (.overlay sets height: 100% of an auto-height body). */
+#main.overlay {
+    height: 100vh;
+    width: 100%;
+}
+
+/* Phones: a shorter arena leaves room for the controls below it. */
+@media (max-width: 600px) {
+    .game-box-area {
+        height: 58%;
+    }
+
+    .fighter {
+        --fw: clamp(72px, 22vw, 110px);
+    }
+
+    .hud-bar {
+        top: 8px;
+        left: 10px;
+        right: 10px;
+    }
+
+    .fighter-hud .player-name,
+    .fighter-hud .player-names {
+        font-size: 13px;
+    }
+}
+
+/* Phones: arena on top; d-pad and moves side by side below it; Exit, Pause and Sound underneath. */
+@media (max-width: 600px) {
+    .game-container,
+    #main.overlay {
+        height: auto;
+        overflow: visible;
+    }
+
+    .game-box-area {
+        height: 52vh;
+        margin: 2%;
+    }
+
+    .btns-control {
+        bottom: 0;
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-template-areas:
+            "pad moves"
+            "actions actions";
+        justify-content: space-between;
+        align-items: center;
+        row-gap: 10px;
+        padding: 10px 4% 16px;
+    }
+
+    .controls {
+        grid-area: pad;
+        left: 0;
+        width: 128px;
+        height: 128px;
+    }
+
+    .moves {
+        grid-area: moves;
+        right: 0;
+        height: 128px;
+        padding: 4px;
+    }
+
+    .moves button {
+        margin: 4px;
+        min-width: 64px;
+    }
+
+    #play,
+    #exit {
+        grid-area: actions;
+        padding-top: 0;
+    }
+
+    #exit {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    #exit.hide,
+    #play.hide {
+        display: none;
+    }
+}
+
+/* The navbar is fixed: keep the arena (and its corner bars) below it. JS sets the exact height. */
+.game-container {
+    box-sizing: border-box;
+    padding-top: var(--nav-h, 76px);
+}
+
+/* Controls sit under the arena instead of being nudged up over its floor. */
+.btns-control {
+    bottom: 0;
+    margin-top: 8px;
+}
+
+@media (min-width: 601px) {
+    .fighter {
+        --fw: clamp(90px, 13vw, 190px);
+    }
+}

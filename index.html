@@ -15,17 +15,12 @@
     <link rel="manifest" href="./favicon/site.webmanifest">
 
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/fighters.css">
 
     <script src="https://unpkg.com/feather-icons" defer></script>
 
-    <script src="https://unpkg.com/gifler/gifler.min.js" defer></script>
-
-    <!-- Include jQuery UI CSS -->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" defer>
-
-    <!-- Include jQuery and jQuery UI JS -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js" defer></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
+    <!-- jQuery is bundled locally so the site works even if a CDN is down -->
+    <script src="./scripts/jquery-3.7.0.min.js" defer></script>
 
     <script src="./scripts/var.js" defer></script>
     <script src="./scripts/nav.js" defer> </script>
@@ -36,7 +31,7 @@
 <body id="wrapper">
     <nav class="navbar" id="nav">
         <div class="flex-display">
-            <span><i data-feather="square" class="txt-main"></i></span>
+            <img class="logo-mark" src="./resources/art/logo.svg" alt="">
             <span>Fight Fusion</span>
         </div>
         <div class="menu-lg">
@@ -80,15 +75,16 @@
             </div>
             <div class="landing-img">
                 <!-- Image Container -->
-                <div class="fixed-size" data-cycle-fx="scrollHorz" data-cycle-timeout="0" data-cycle-prev="#prev"
-                    data-cycle-next="#next">
-                    <img class="" src="./resources/images/ff01.jpg" id="img-landing">
+                <div class="fixed-size">
+                    <img src="./resources/screens/ff-punch.webp" id="img-landing"
+                        alt="Fight Fusion: the orange fighter punches, the blue fighter loses 1 life">
                 </div>
+                <p id="slide-caption" class="slide-caption" aria-live="polite"></p>
                 <div class="txt-main flex-display">
-                    <button id="prev" class="navbar-hover">&#9664; </button>
-                    <button id="resume" class="navbar-hover hide">&#9658; </button>
-                    <button id="pause" class="navbar-hover">&#10074;&#10074; </button>
-                    <button id="next" class="navbar-hover">&#9654; </button>
+                    <button id="prev" class="navbar-hover" aria-label="Previous screenshot">&#9664; </button>
+                    <button id="resume" class="navbar-hover hide" aria-label="Play slideshow">&#9658; </button>
+                    <button id="pause" class="navbar-hover" aria-label="Pause slideshow">&#10074;&#10074; </button>
+                    <button id="next" class="navbar-hover" aria-label="Next screenshot">&#9654; </button>
                 </div>
             </div>
         </div>
@@ -103,12 +99,12 @@
             </h2>
 
             <p class="section-description">
-                Fight Fusion is an exhilarating game designed to fuel your passion for combat and strategy. In this
-                high-paced game, players engage in rounds of intense fighting, utilizing a combination of skills and
-                tactics to outmaneuver their opponents. Each round lasts for 10 seconds, and players must win more than
-                2 rounds to claim victory. If there's a draw in the initial rounds, extra rounds are added until a
-                winner emerges. The game pits players against the computer, making each match a unique challenge. Get
-                ready for a thrilling experience that tests your reflexes, strategy, and endurance!
+                Fight Fusion is a 2D fighting game against the computer, built with JavaScript and jQuery. Each round
+                lasts 60 seconds: knock your opponent out, or have more life when time runs out. Win 2 rounds to win
+                the match; if the rounds are tied after 3, extra rounds are played, up to 5. Punch, kick, block, jump
+                over kicks, crouch under punches, and save your combos for when they count. Pick Easy, Normal or Hard
+                before you start, and play with the keyboard or the on-screen controls on a phone. All the artwork is
+                drawn for this game.
             </p>
         </div>
     </section>
@@ -120,12 +116,12 @@
                 <div class="border"></div>
             </h2>
             <div class="contact-icons">
-                <a href="mailto:taselablessed@gmail.com?subject=Book an appointment" target="_blank"
+                <a href="mailto:taselablessed@gmail.com?subject=Fight%20Fusion" target="_blank"
                     rel="noopener noreferrer">
                     <i data-feather="mail" class="contact-icon"></i>
                     <p>Email</p>
                 </a>
-                <a href="https://www.facebook.com/tasela.berlizyo/" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.facebook.com/tasela.berliz/" target="_blank" rel="noopener noreferrer">
                     <i data-feather="facebook" class="contact-icon"></i>
                     <p>Facebook</p>
                 </a>
@@ -138,14 +134,9 @@
                     <i data-feather="github" class="contact-icon"></i>
                     <p>GitHub</p>
                 </a>
-                <a href="https://www.instagram.com/tasela_berliz/" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.instagram.com/blessed_tasela/" target="_blank" rel="noopener noreferrer">
                     <i data-feather="instagram" class="contact-icon"></i>
                     <p>Instagram</p>
-                </a>
-                <a href="https://wa.me/+12369900823?text=Hi Blessed, I would like to..." target="_blank"
-                    rel="noopener noreferrer">
-                    <i data-feather="message-circle" class="contact-icon"></i>
-                    <p>WhatsApp</p>
                 </a>
             </div>
         </div>
@@ -168,11 +159,11 @@
                 </div>
                 <div class="footer-item">
                     <div class="footer-icons">
-                        <a href="mailto:taselablessed@gmail.com?subject=Book an appointment" target="_blank"
+                        <a href="mailto:taselablessed@gmail.com?subject=Fight%20Fusion" target="_blank"
                             rel="noopener noreferrer">
                             <i data-feather="mail" class="footer-icon"></i>
                         </a>
-                        <a href="https://www.facebook.com/tasela.berlizyo/" target="_blank" rel="noopener noreferrer">
+                        <a href="https://www.facebook.com/tasela.berliz/" target="_blank" rel="noopener noreferrer">
                             <i data-feather="facebook" class="footer-icon"></i>
                         </a>
                         <a href="https://www.linkedin.com/in/blessed-tasela-b9071920a/" target="_blank"
@@ -182,12 +173,8 @@
                         <a href="https://github.com/blessedtasela" target="_blank" rel="noopener noreferrer">
                             <i data-feather="github" class="footer-icon"></i>
                         </a>
-                        <a href="https://www.instagram.com/tasela_berliz/" target="_blank" rel="noopener noreferrer">
+                        <a href="https://www.instagram.com/blessed_tasela/" target="_blank" rel="noopener noreferrer">
                             <i data-feather="instagram" class="footer-icon"></i>
-                        </a>
-                        <a href="https://wa.me/+12369900823?text=Hi Blessed, I would like to..." target="_blank"
-                            rel="noopener noreferrer">
-                            <i data-feather="message-circle" class="footer-icon"></i>
                         </a>
                     </div>
                 </div>

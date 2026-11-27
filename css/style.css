@@ -120,7 +120,9 @@ button:hover {
 
 .fixed-size img {
   width: 100%;
-  height: 400px;
+  height: auto;
+  aspect-ratio: 12 / 5;
+  object-position: 50% 70%;
   -o-object-fit: cover;
      object-fit: cover;
   border-radius: 10px;
@@ -457,4 +459,11 @@ button:hover {
 html,
 body {
     touch-action: manipulation;
+}
+
+.slide-caption {
+  min-height: 1.4em;
+  margin: 10px 0 0;
+  color: #f4f4f4;
+  text-align: center;
 }

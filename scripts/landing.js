@@ -1,176 +1,55 @@
+// Home-page carousel: screenshots of the actual game.
+// Prev / Next always move exactly one slide, pause or not, and a slide is visible at all times
+// (the old version skipped clicks for 4 seconds and could leave the hero blank).
 
-function mainImgFtn(img) {
-    $imgLanding.attr({
-        'src': `${img}`,
-        'alt': `${img}`
+const slideInterval = 4500;
+const fadeDuration = 220;
+let slideTimer = null;
+let slidePaused = false;
+
+// Preload so a fade never waits on the network.
+heroes.forEach(hero => { const pre = new Image(); pre.src = hero.image; });
+
+function showSlide(index) {
+    currentImgIdx = (index + heroes.length) % heroes.length;
+    const hero = heroes[currentImgIdx];
+    $imgLanding.stop(true, true).fadeTo(fadeDuration, 0.15, function () {
+        $imgLanding.attr({ src: hero.image, alt: hero.alt });
+        $('#slide-caption').text(hero.title);
+        $imgLanding.fadeTo(fadeDuration, 1);
     });
 }
 
-
-function slideAnimationRace() {
-
-    if (isAnimationRunning) {
-        return;
+function startSlides() {
+    clearInterval(slideTimer);
+    if (!slidePaused) {
+        slideTimer = setInterval(() => showSlide(currentImgIdx + 1), slideInterval);
     }
-
-    currentImgIdx++;
-
-    if (currentImgIdx === heroes.length) {
-        isMaxImg = true;
-        isMinImg = false;
-        currentImgIdx = 0;
-    }
-
-    $imgElement.css({
-        'display': 'none',
-        'overflow': 'hidden'
-    })
-
-    $imgElement.show("slide", { direction: "left", }, moveDelay);
-    $imgElement.hide("slide", { direction: "right", }, moveDelay);
-    console.log('moving right');
-
-
-    console.log('imgIdx: ', currentImgIdx)
-
-
-    // Continue the animation with a slideDelay
-    setTimeout(function () {
-        landingSlideAnimation = requestAnimationFrame(slideAnimationRace);
-    }, slideDelay);
-
-    mainImgFtn(`${heroes[currentImgIdx].image}`);
 }
 
-// Function to stop the image slide
-$pause.click(function pauseSlide() {
+$next.click(() => { showSlide(currentImgIdx + 1); startSlides(); });
+$prev.click(() => { showSlide(currentImgIdx - 1); startSlides(); });
 
-    const now = Date.now();
-    if (now - slideLastClickTime <= slideDelay) {
-        const nowInMilliseconds = Date.now();
-        const nowInSeconds = Math.floor(nowInMilliseconds / 1000);
-
-        // Get the number of seconds past the last full minute
-        let seconds = nowInSeconds % 60;
-        console.log('Button clicked too soon, ignoring for..... ', nowInSeconds, 'secs');
-        return;
-    }
-
-    // Update the last click time
-    slideLastClickTime = now;
-
-    isPauseClicked = true;
-
-    cancelAnimationFrame(landingSlideAnimation);
-    $imgElement.stop(true, true);
-
-    // isAnimationStarted = false;
-    isAnimationRunning = true;
-
-    $imgElement.show("slide", { direction: "right", }, 500);
-
-    setTimeout(() => {
-        console.log('to handle duration of showing pause or resume logic')
-    }, slideDelay);
-
-    $slideWait.addClass('hide');
+$pause.click(() => {
+    slidePaused = true;
+    clearInterval(slideTimer);
     $pause.addClass('hide');
     $resume.removeClass('hide');
-
 });
 
-
-$next.click(function () {
-    const now = Date.now();
-    if (now - slideLastClickTime <= slideDelay) {
-        const nowInSeconds = Math.floor(now / 1000);
-        let seconds = nowInSeconds % 60;
-        console.log('Button clicked too soon, ignoring for..... ', seconds, 'secs');
-        return;
-    }
-
-    slideLastClickTime = now;
-
-    if (currentImgIdx === heroes.length - 1) {
-        currentImgIdx = minIdx;
-    } else {
-        currentImgIdx++;
-    }
-
-    resetAnimationState();
-
-    $imgElement.show("slide", { direction: "left", }, moveDelay);
-    $imgElement.hide("slide", { direction: "right", }, moveDelay);
-    mainImgFtn(`${heroes[currentImgIdx].image}`);
-
-    $imgElement.show("slide", { direction: "right", }, moveDelay);
-})
-
-$prev.click(function () {
-
-    const now = Date.now();
-    if (now - slideLastClickTime <= slideDelay) {
-        const nowInSeconds = Math.floor(now / 1000);
-        let seconds = nowInSeconds % 60;
-        console.log('Button clicked too soon, ignoring for..... ', seconds, 'secs');
-        return;
-    }
-
-    slideLastClickTime = now;
-
-    if (currentImgIdx === minIdx) {
-        currentImgIdx = heroes.length - 1;
-    } else {
-        currentImgIdx--;
-    }
-
-    resetAnimationState();
-
-    $imgElement.show("slide", { direction: "left", }, moveDelay);
-    $imgElement.hide("slide", { direction: "right", }, moveDelay);
-    console.log('moving left');
-
-    mainImgFtn(`${heroes[currentImgIdx].image}`);
-})
-
-function resetAnimationState() {
-    $imgElement.stop(true, true);
-    cancelAnimationFrame(landingSlideAnimation);
-    $imgElement.css('display', 'block');
-}
-
-
-// Event listener for the resume button
-$resume.click(function () {
-
-    const now = Date.now();
-    if (now - slideLastClickTime <= slideDelay) {
-        const nowInMilliseconds = Date.now();
-        const nowInSeconds = Math.floor(nowInMilliseconds / 1000);
-
-        // Get the number of seconds past the last full minute
-        let seconds = nowInSeconds % 60;
-        console.log('Button clicked too soon, ignoring for..... ', nowInSeconds, 'secs');
-        return;
-    }
-
-    // Update the last click time
-    slideLastClickTime = now;
-    isPauseClicked = false;
-
-    console.log('resume clicked')
-    if (!isAnimationRunning) {
-        return;
-    }
-
-    isAnimationRunning = false;
-
-
-    landingSlideAnimation = requestAnimationFrame(slideAnimationRace);
-
-
-    $slideWait.addClass('hide');
+$resume.click(() => {
+    slidePaused = false;
     $resume.addClass('hide');
     $pause.removeClass('hide');
-
+    startSlides();
 });
+
+// Respect reduced-motion: no auto-advance, the buttons still work.
+if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    slidePaused = true;
+    $pause.addClass('hide');
+    $resume.removeClass('hide');
+}
+
+showSlide(0);
+startSlides();
