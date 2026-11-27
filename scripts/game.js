@@ -65,7 +65,6 @@ $updatePlayerName.val(player01.playerName);
 updatePlayerName();
 displayPlayersName();
 
-$gameAudio[0].volume = 0.1;
 
 $showGameHistory.click(function () {
     $gameHistory.slideToggle(800);

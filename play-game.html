@@ -27,12 +27,12 @@
     <script src="./scripts/nav.js" defer> </script>
     <script src="./scripts/player.js" defer></script>
     <script src="./scripts/game-var.js" defer></script>
+    <script src="./scripts/sound.js" defer></script>
     <script src="./scripts/game-functions.js" defer></script>
     <script src="./scripts/game.js" defer></script>
 </head>
 
 <body id="wrapper">
-    <audio id="game-audio" loop></audio>
     <nav class="navbar" id="nav">
         <div class="flex-display">
             <img class="logo-mark" src="./resources/art/logo.svg" alt="">
@@ -69,7 +69,6 @@
             <div class="player-area">
                 <div class="player" id="players">
                     <div id="player01" class="fighter" data-arms="guard" data-legs="stand" role="img" aria-label="Your fighter">
-                        <audio id="player01-audio"></audio>
                         <div class="fighter-hud">
                             <div class="player-name" id="player01-name"></div>
                             <div class="life-track"><span class="life" id="player01-life"></span></div>
@@ -78,7 +77,6 @@
                         <div class="fighter-art"></div>
                     </div>
                     <div id="player02" class="fighter" data-arms="guard" data-legs="stand" role="img" aria-label="Computer fighter">
-                        <audio id="player02-audio"></audio>
                         <div class="fighter-hud">
                             <div class="player-names" id="player02-name"></div>
                             <div class="life-track"><span class="life" id="player02-life"></span></div>
@@ -144,7 +142,6 @@
             <button id="next-round">Next Round</button>
             <button id="round-end-game">End Game</button>
         </div>
-        <audio id="round-result-audio"></audio>
     </div>
 
     <div id="end-game" class="popup">
@@ -157,7 +154,6 @@
             <button id="end-game-new-game">New Game</button>
             <button id="cancel-end-game">Finish</button>
         </div>
-        <audio id="end-game-audio"></audio>
     </div>
 
     <div id="resume-game" class="popup">
@@ -286,7 +282,6 @@
         <div class="flex-display" id="round-count-down">
             00:00s
         </div>
-        <audio id="round-start-audio"></audio>
     </div>
 
     <div id="current-round" class="count-down-popup">

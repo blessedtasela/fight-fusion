@@ -153,7 +153,6 @@ const roundWin = 'wins this round!';
 const roundLose = 'lose this round!';
 const roundDraw = 'Round is a draw!';
 const artPath = `./resources/art/`;
-const audioPath = `./resources/audios/`;
 const nil = 'NIL';
 
 const playerPosition = {

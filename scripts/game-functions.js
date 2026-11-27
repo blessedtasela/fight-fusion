@@ -35,15 +35,11 @@ function escapeHtml(value) {
     return String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-// Restart a sound from the beginning, even if the same file just played.
-function playSound($audio, name) {
+// Sounds are synthesized in scripts/sound.js. The first argument is kept so call sites read
+// the same as before (who made the sound); it no longer points at an <audio> element.
+function playSound(source, name) {
     if (!soundOn) return;
-    const el = $audio[0];
-    if (!el) return;
-    el.src = `${audioPath}${name}.mp3`;
-    el.currentTime = 0;
-    const playing = el.play();
-    if (playing) playing.catch(() => { /* blocked until the user interacts: ignore */ });
+    Sound.play(name);
 }
 
 function showPopup($popup) {
@@ -243,6 +239,7 @@ function pauseRound(reason = 'exit') {
     if (!roundActive || roundPaused) return;
     pauseReason = reason;
     roundPaused = true;
+    stopGameAudio();
     $pauseBtn.text('Resume');
     roundActive = false;
     clearInterval(roundIntervalId);
@@ -253,6 +250,7 @@ function resumeRound(reason = 'exit') {
     if (!roundPaused || !gameStarted || reason !== pauseReason) return;
     pauseReason = null;
     roundPaused = false;
+    startGameAudio();
     $pauseBtn.text('Pause');
     roundActive = true;
     enableControls();
@@ -582,16 +580,11 @@ function updatePlayersPosition() {
 
 function startGameAudio() {
     if (!soundOn) return;
-    const el = $gameAudio[0];
-    if (!el.src.endsWith('game-play.mp3')) el.src = `${audioPath}game-play.mp3`;
-    el.loop = true;
-    const playing = el.play();
-    if (playing) playing.catch(() => { });
+    Sound.startMusic();
 }
 
 function stopGameAudio() {
-    $gameAudio[0].pause();
-    $gameAudio[0].currentTime = 0;
+    Sound.stopMusic();
 }
 
 // ── Save, resume and history ────────────────────────────────────────────────
@@ -797,8 +790,8 @@ function toggleSound() {
     localStorage.setItem('ff-sound', soundOn ? 'on' : 'off');
     renderSoundButton();
     if (!soundOn) {
-        $gameAudio[0].pause();
-    } else if (gameStarted) {
+        stopGameAudio();
+    } else if (gameStarted && !roundPaused) {
         startGameAudio();
     }
 }
